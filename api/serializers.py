@@ -8,6 +8,12 @@ class TagSerializer(serializers.ModelSerializer):
     fields = ['id', 'name', 'items']
 
 
+class TagsCatalogSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Tag
+    fields = ['id', 'name']
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
   class Meta:
     model = Employee
@@ -16,7 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 class CatalogSerializer(serializers.ModelSerializer):
   owner = EmployeeSerializer(many=False)
-  tags = TagSerializer(many=True)
+  tags = TagsCatalogSerializer(many=True)
 
   class Meta:
     model = Catalog

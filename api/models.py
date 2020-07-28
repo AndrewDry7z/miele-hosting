@@ -16,7 +16,7 @@ class Catalog(models.Model):
   description = models.TextField(blank=True)
   article = models.CharField(max_length=40, blank=True)
   file = models.FileField(upload_to='media/%Y/%m/%d/', blank=False, default=None)
-  owner = models.OneToOneField(Employee, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
+  owner = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
 
   def __str__(self):
     return self.title
