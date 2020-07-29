@@ -1,0 +1,38 @@
+@import "reset";
+@import "fonts";
+@import "variables";
+
+.container {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  box-sizing: unset;
+
+  @media screen and (max-width: 1200px) {
+    padding: 0 5vw;
+  }
+  @media screen and (max-width: 690px) {
+    padding: 0 2vw;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  background: #fff;
+  color: $main-black;
+
+  @media screen and (max-width: 1000px) {
+    font-size: 14px;
+  }
+}
+
+.grey {
+  color: $main-grey;
+}

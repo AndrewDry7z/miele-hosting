@@ -24,7 +24,10 @@ SECRET_KEY = 't70dyq&17(v-(&-k8z=a3%qnyp+z2abqo^xi6q%sem7ntj*9jr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  'localhost',
+  '192.168.1.70'
+]
 
 # Application definition
 
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
   'django.contrib.staticfiles',
   'rest_framework',
   'rest_framework.authtoken',
+  'corsheaders',
   'api'
 ]
 
@@ -48,6 +52,7 @@ MIDDLEWARE = [
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -103,6 +108,8 @@ REST_FRAMEWORK = {
     'rest_framework.permissions.IsAuthenticated',
   )
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

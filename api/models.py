@@ -2,6 +2,16 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
+from .validators import validate_svg
+
+
+class Countries(models.Model):
+  countryname = models.CharField(max_length=100)
+  code = models.CharField(max_length=3)
+  flag = models.FileField(upload_to='media/flags/', validators=[validate_svg])
+
+  def __str__(self):
+    return self.countryname
 
 
 class Employee(models.Model):
@@ -9,11 +19,11 @@ class Employee(models.Model):
   phone = models.CharField(max_length=15, blank=True)
   skype = models.CharField(max_length=100, blank=True)
   photo = models.FileField(upload_to='media/users/', blank=False, default=None)
-
+  country = models.ForeignKey(Countries, default=None, on_delete=models.SET('DELETED'))
 
   def __str__(self):
-    return self.user.name
-
+    name = f"{self.user.first_name} {self.user.last_name}"
+    return name
 
 class Catalog(models.Model):
   title = models.CharField(max_length=200, unique=True)

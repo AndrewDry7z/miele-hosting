@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Catalog, Employee, Tag, File
+from .models import Catalog, Employee, Tag, File, Countries
 from django.contrib.auth.models import User
 
 
@@ -25,7 +25,7 @@ class FilesSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
   class Meta:
     model = Employee
-    fields = ['id', 'user', 'phone', 'skype', 'photo']
+    fields = ['id', 'user', 'phone', 'skype', 'photo', 'country']
 
 
 class CatalogSerializer(serializers.ModelSerializer):
@@ -38,10 +38,16 @@ class CatalogSerializer(serializers.ModelSerializer):
     fields = ['id', 'title', 'description', 'article', 'owner', 'tags', 'files']
 
 
+class CountrySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Countries
+    fields = ['id', 'countryname', 'code', 'flag']
+
+
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'username', 'password']
+    fields = ['id', 'username', 'password', ]
     extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
   def create(self, validated_data):
