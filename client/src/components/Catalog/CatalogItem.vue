@@ -3,7 +3,7 @@
         <p class="catalog-item__article grey" v-if="article.length > 0">
             Article: {{ this.article }}
         </p>
-        <p class="catalog-item__title">
+        <p class="catalog-item__title" @click="$emit('item-selected', id)">
             {{ this.title }}
         </p>
         <p class="catalog-item__description">

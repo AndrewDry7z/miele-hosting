@@ -1,19 +1,22 @@
 <template>
-    <header class="header">
-        <div class="container">
-            <div class="header-logo">
-                <router-link to="/">
-                    <img src="~@/assets/images/logo.svg" alt="Miele">
-                </router-link>
-            </div>
-        </div>
-    </header>
+  <header class="header">
+    <div class="container">
+      <div class="header-logo">
+        <router-link to="/">
+          <Logo />
+        </router-link>
+      </div>
+    </div>
+  </header>
 </template>
 
 <script>
-    export default {
-        name: "Header"
-    }
+import Logo from "@/components/Logo/Logo";
+
+export default {
+  name: "Header",
+  components: {Logo}
+}
 </script>
 
 <style scoped>
