@@ -1,22 +1,29 @@
 <template>
-  <div class="catalog">
-    <div class="catalog-grid">
-      <CatalogItem
-          v-for="item in catalog"
-          :key="item.id"
-          :title="item.title"
-          :article="item.article"
-          :description="item.description"
-          @item-selected="itemSelected(item.id)"
-      />
-    </div>
+  <main class="home">
+    <div class="container">
+      <div class="catalog">
+        <router-link to="/add" class="catalog-add-button">
+          + Add content
+        </router-link>
+        <div class="catalog-grid">
+          <CatalogItem
+              v-for="item in catalog"
+              :key="item.id"
+              :title="item.title"
+              :article="item.article"
+              :description="item.description"
+              @item-selected="itemSelected(item.id)"
+          />
+        </div>
 
-    <CatalogDetails
-        :item="selectedItem"
-        @close-details="closeDetails()"
-        @overlay-click="overlayClick($event)"
-    />
-  </div>
+        <CatalogDetails
+            :item="selectedItem"
+            @close-details="closeDetails()"
+            @overlay-click="overlayClick($event)"
+        />
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
@@ -29,7 +36,8 @@ export default {
   data() {
     return {
       catalog: [],
-      selectedItem: null
+      selectedItem: null,
+      token: ''
     }
   },
   methods: {
@@ -46,20 +54,28 @@ export default {
     }
   },
   created() {
-    fetch('http://192.168.1.70:8000/api/catalog/', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Token ac7afdd227809142e41fd109ce2bcbe4c2e01e4d'
-      }
-    })
-        .then(response => response.json())
-        .then(response => this.catalog = response)
-        .catch(error => console.log(error))
+    if (this.$cookies.isKey('mieletoken')) {
+      this.token = this.$cookies.get('mieletoken')
+      fetch('http://192.168.1.70:8000/api/catalog/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${this.token}`
+        }
+      })
+          .then(response => response.json())
+          .then(response => this.catalog = response)
+          .catch(error => console.log(error))
+    } else {
+      this.$router.push('/auth/')
+    }
+
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import "~@/styles/_variables.scss";
+
 .catalog {
   &-grid {
     display: grid;
@@ -67,6 +83,18 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     grid-column-gap: 20px;
     grid-row-gap: 30px;
+  }
+
+  &-add {
+    &-button {
+      display: block;
+      padding: 20px 25px;
+      background: $main-lightgrey;
+      color: $main-black;
+      text-decoration: none;
+      width: fit-content;
+      margin-bottom: 30px;
+    }
   }
 }
 </style>

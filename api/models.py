@@ -14,12 +14,12 @@ class Countries(models.Model):
     return self.countryname
 
 
-class Employee(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
-  phone = models.CharField(max_length=15, blank=True)
-  skype = models.CharField(max_length=100, blank=True)
-  photo = models.FileField(upload_to='media/users/', blank=False, default=None)
-  country = models.ForeignKey(Countries, default=None, on_delete=models.SET('DELETED'))
+class Person(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person')
+  phone = models.CharField(max_length=15, blank=True, null=True)
+  skype = models.CharField(max_length=100, blank=True, null=True)
+  photo = models.FileField(upload_to='media/users/', blank=True, default=None, null=True)
+  country = models.ForeignKey(Countries, default=None, on_delete=models.SET('DELETED'), blank=True, null=True)
 
   def __str__(self):
     name = f"{self.user.first_name} {self.user.last_name}"

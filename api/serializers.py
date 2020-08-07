@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Catalog, Employee, Tag, File, Countries
+from django.contrib.auth.hashers import make_password
+from .models import Catalog, Person, Tag, File, Countries
 from django.contrib.auth.models import User
 
 
@@ -22,35 +23,42 @@ class FilesSerializer(serializers.ModelSerializer):
     fields = ['id', 'name', 'file', 'catalog_item']
 
 
-class EmployeeSerializer(serializers.ModelSerializer):
+class PersonSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Employee
-    fields = ['id', 'user', 'phone', 'skype', 'photo', 'country']
+    model = Person
+    fields = ['phone', 'skype', 'photo', 'country']
+
+
+class CountrySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Countries
+    fields = ['countryname', 'code', 'flag']
+
+
+class UserSerializer(serializers.ModelSerializer):
+  person = PersonSerializer(many=False)
+
+  def create(self, validated_data):
+    person_data = validated_data.pop('person')
+    user = User.objects.create(
+      **validated_data
+    )
+    user.set_password(user.password)
+    user.save()
+    Person.objects.create(user=user, **person_data)
+    return user
+
+  class Meta:
+    model = User
+    fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'person']
+    extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
 
 class CatalogSerializer(serializers.ModelSerializer):
-  owner = EmployeeSerializer(many=False)
+  owner = PersonSerializer(many=False)
   tags = TagsCatalogSerializer(many=True)
   files = FilesSerializer(many=True)
 
   class Meta:
     model = Catalog
     fields = ['id', 'title', 'description', 'article', 'owner', 'tags', 'files']
-
-
-class CountrySerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Countries
-    fields = ['id', 'countryname', 'code', 'flag']
-
-
-class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ['id', 'username', 'password', ]
-    extra_kwargs = {'password': {'write_only': True, 'required': True}}
-
-  def create(self, validated_data):
-    user = User.objects.create_user(**validated_data)
-    Token.objects.create(user=user)
-    return user

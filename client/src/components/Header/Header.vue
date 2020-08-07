@@ -6,6 +6,9 @@
           <Logo />
         </router-link>
       </div>
+      <div class="header-right">
+        <p @click="logout()">Logout</p>
+      </div>
     </div>
   </header>
 </template>
@@ -15,10 +18,24 @@ import Logo from "@/components/Logo/Logo";
 
 export default {
   name: "Header",
-  components: {Logo}
+  components: {Logo},
+  methods: {
+    logout() {
+      this.$cookies.remove('mieletoken')
+      this.$router.push('/auth/')
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.header {
+  margin-bottom: 50px;
 
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
 </style>

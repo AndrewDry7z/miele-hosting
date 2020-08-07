@@ -33,6 +33,18 @@ body {
   }
 }
 
+main {
+  min-height: 50vh;
+}
+
 .grey {
   color: $main-grey;
+}
+
+.button--red {
+  display: block;
+  background: $main-red;
+  color: #ffffff;
+  width: 250px;
+  height: 60px;
 }
