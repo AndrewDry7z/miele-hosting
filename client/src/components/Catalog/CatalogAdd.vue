@@ -97,14 +97,14 @@ export default {
         description: '',
         article: '',
         owner: 1
-      }
+      },
+      token: this.$cookies.get('mieletoken')
     }
   },
   methods: {
     selectTag() {
       this.selectedTags.push(this.tagInput)
       this.tagInput = null
-      console.log(this.selectedTags)
     },
     addFile(e) {
       let droppedFiles = e.dataTransfer.files;
@@ -127,7 +127,7 @@ export default {
     },
     addFileFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
-      fetch(`http://192.168.1.70:8000/api/catalog/`, {
+      fetch(`http://localhost:8000/api/catalog/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export default {
     }
   },
   created() {
-    fetch('http://192.168.1.70:8000/api/tags/', {
+    fetch('http://localhost:8000/api/tags/', {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`

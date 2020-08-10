@@ -1,21 +1,25 @@
 <template>
   <main class="home">
     <div class="container">
-      <div class="catalog">
-        <router-link to="/add" class="catalog-add-button">
-          + Add content
-        </router-link>
-        <div class="catalog-grid">
-          <CatalogItem
-              v-for="item in catalog"
-              :key="item.id"
-              :title="item.title"
-              :article="item.article"
-              :description="item.description"
-              @item-selected="itemSelected(item.id)"
-          />
+      <router-link to="/add" class="catalog-add-button">
+        + Add content
+      </router-link>
+      <div class="home-grid">
+        <div class="catalog">
+          <div class="catalog-grid">
+            <CatalogItem
+                v-for="item in filteredCatalog"
+                :key="item.id"
+                :title="item.title"
+                :article="item.article"
+                :description="item.description"
+                @item-selected="itemSelected(item.id)"
+            />
+          </div>
         </div>
-
+        <CatalogTags :token="token"
+                     @tag-select="filterByTag($event)"
+        />
         <CatalogDetails
             :item="selectedItem"
             @close-details="closeDetails()"
@@ -23,21 +27,24 @@
         />
       </div>
     </div>
+
   </main>
 </template>
 
 <script>
 import CatalogItem from "./CatalogItem";
 import CatalogDetails from "./CatalogDetails";
+import CatalogTags from "@/components/Catalog/CatalogTags";
 
 export default {
   name: "Catalog",
-  components: {CatalogDetails, CatalogItem},
+  components: {CatalogTags, CatalogDetails, CatalogItem},
   data() {
     return {
       catalog: [],
       selectedItem: null,
-      token: ''
+      token: '',
+      filteredCatalog: []
     }
   },
   methods: {
@@ -51,19 +58,31 @@ export default {
       if (event.target.classList.contains('overlay')) {
         this.selectedItem = null
       }
+    },
+    filterByTag(tag) {
+      this.filteredCatalog = []
+      for (let item of this.catalog) {
+        if (item.tags.some(tagItem => tagItem.id === tag.id)) {
+          this.filteredCatalog.push(item)
+        }
+      }
     }
   },
   created() {
     if (this.$cookies.isKey('mieletoken')) {
       this.token = this.$cookies.get('mieletoken')
-      fetch('http://192.168.1.70:8000/api/catalog/', {
+      fetch('http://localhost:8000/api/catalog/', {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.token}`
         }
       })
           .then(response => response.json())
-          .then(response => this.catalog = response)
+          .then(response => {
+                this.catalog = response
+                this.filteredCatalog = this.catalog
+              }
+          )
           .catch(error => console.log(error))
     } else {
       this.$router.push('/auth/')
@@ -80,7 +99,7 @@ export default {
   &-grid {
     display: grid;
     align-items: stretch;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
     grid-column-gap: 20px;
     grid-row-gap: 30px;
   }
@@ -94,6 +113,18 @@ export default {
       text-decoration: none;
       width: fit-content;
       margin-bottom: 30px;
+    }
+  }
+}
+
+.home {
+  &-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    column-gap: 30px;
+
+    @media screen and (max-width: 1000px) {
+      display: block;
     }
   }
 }
