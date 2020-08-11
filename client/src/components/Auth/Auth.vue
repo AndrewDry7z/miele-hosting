@@ -100,6 +100,7 @@ export default {
             if (response.token === undefined) {
               this.showAuthError = true
             } else {
+              console.log(response)
               this.$cookies.set('mieletoken', response.token, "30d")
               this.$router.push('/')
             }

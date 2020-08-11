@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from .views import CatalogViewSet, TagsViewSet, FilesViewSet, UserViewSet, CountryViewSet
+from .views import CatalogViewSet, TagsViewSet, FilesViewSet, UserViewSet, CountryViewSet, GetAuthToken
 
 router = routers.DefaultRouter()
 router.register('catalog', CatalogViewSet)
