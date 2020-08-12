@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import CryptoJS from 'crypto-js'
+
 export default {
   name: "Auth",
   data() {
@@ -85,7 +87,7 @@ export default {
   },
   methods: {
     login() {
-      fetch(`http://localhost:8000/auth/`, {
+      fetch(`https://miele-hosting.herokuapp.com/auth/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -100,14 +102,15 @@ export default {
             if (response.token === undefined) {
               this.showAuthError = true
             } else {
-              console.log(response)
+              let userIdEncrypted = CryptoJS.AES.encrypt(response.user.id.toString(), "ID").toString()
+              this.$cookies.set('uid', userIdEncrypted, '30d')
               this.$cookies.set('mieletoken', response.token, "30d")
               this.$router.push('/')
             }
           })
     },
     register() {
-      fetch(`http://localhost:8000/api/users/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

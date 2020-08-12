@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8f025db8-a19f-4d02-a31a-99818fe5aa85" name="cs-miele" url="http://95.213.184.41">
+        <fileTransfer rootFolder="/www/miele-hosting.creativesoldiers.ru" host="95.213.184.41" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -71,7 +71,7 @@ export default {
   created() {
     if (this.$cookies.isKey('mieletoken')) {
       this.token = this.$cookies.get('mieletoken')
-      fetch('http://localhost:8000/api/catalog/', {
+      fetch('https://miele-hosting.herokuapp.com/api/catalog/', {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.token}`

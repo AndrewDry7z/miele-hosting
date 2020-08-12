@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    fetch('http://localhost:8000/api/tags/', {
+    fetch('https://miele-hosting.herokuapp.com/api/tags/', {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`
