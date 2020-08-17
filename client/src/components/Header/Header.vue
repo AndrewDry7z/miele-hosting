@@ -14,7 +14,7 @@
           <img class="header-user__avatar" src="../../assets/images/default_photo.jpg" alt=""
                @click="showProfileActions = !showProfileActions">
           <div class="header-user-actions" v-if="showProfileActions">
-            <p class="header-user-actions__profile">View profile</p>
+            <router-link to="/profile/" class="header-user-actions__profile">View profile</router-link>
             <p class="header-user-actions__logout" @click="logout">Logout</p>
           </div>
         </div>
@@ -26,6 +26,7 @@
 <script>
 import Logo from "@/components/Logo/Logo";
 import CryptoJS from "crypto-js"
+import store from "@/store"
 
 export default {
   name: "Header",
@@ -33,7 +34,7 @@ export default {
   data() {
     return {
       userID: this.$cookies.get('uid'),
-      user: '',
+      user: store.getters.getUserInfo,
       showProfileActions: false
     }
   },
@@ -55,7 +56,8 @@ export default {
       })
           .then(response => response.json())
           .then(response => {
-                this.user = response
+                store.commit('setUserInfo', response)
+                this.user = store.getters.getUserInfo
               }
           )
           .catch(error => console.log(error))
@@ -111,7 +113,8 @@ export default {
 
       &__profile {
         margin-bottom: 10px;
-        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
       }
 
       &__logout {

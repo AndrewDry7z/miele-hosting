@@ -20,6 +20,11 @@ const routes = [
         path: '/auth',
         name: 'Auth',
         component: Auth
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import(/* webpackChunkName: "add" */ '../components/Profile/Profile.vue')
     }
 ]
 

@@ -5,7 +5,7 @@ export default {
     mutations: {
         setUserInfo(state, object) {
             state.userInfo = object
-        }
+        },
     },
     actions: {
         setUserInfo(context) {
