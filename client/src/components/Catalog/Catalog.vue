@@ -13,6 +13,7 @@
                 :title="item.title"
                 :article="item.article"
                 :description="item.description"
+                :files="item.files"
                 @item-selected="itemSelected(item.id)"
             />
           </div>
@@ -71,7 +72,7 @@ export default {
   created() {
     if (this.$cookies.isKey('mieletoken')) {
       this.token = this.$cookies.get('mieletoken')
-      fetch('https://miele-hosting.herokuapp.com/api/catalog/', {
+      fetch('http://localhost:8000/api/catalog/', {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.token}`

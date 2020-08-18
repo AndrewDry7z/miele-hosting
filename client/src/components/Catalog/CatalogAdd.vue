@@ -127,7 +127,7 @@ export default {
     },
     addFileFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
-      fetch(`https://miele-hosting.herokuapp.com/api/catalog/`, {
+      fetch(`http://localhost:8000/api/catalog/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export default {
     }
   },
   created() {
-    fetch('https://miele-hosting.herokuapp.com/api/tags/', {
+    fetch('http://localhost:8000/api/tags/', {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`

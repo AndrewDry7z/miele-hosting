@@ -1,53 +1,87 @@
 <template>
-    <div class="catalog-item">
-        <p class="catalog-item__article grey" v-if="article.length > 0">
-            Article: {{ this.article }}
-        </p>
-        <p class="catalog-item__title" @click="$emit('item-selected', id)">
-            {{ this.title }}
-        </p>
-        <p class="catalog-item__description">
-            {{ this.description }}
-        </p>
-    </div>
+  <div class="catalog-item">
+    <tiny-slider class="catalog-item-files-slider slider" :rewind="true" :navAsThumbnails="true"
+                 :navContainer="'#custom-nav'" :controls="false" :nav="true">
+      <div v-for="(item, index) in this.files.slice(0, 5)" :key="index">
+        <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
+      </div>
+    </tiny-slider>
+    <ul class="slider-nav" id="custom-nav" v-if="files.length > 1">
+      <li v-for="(item, index) in this.files.slice(0, 5)" :key="index">
+        <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
+      </li>
+    </ul>
+    <p class="catalog-item__article grey" v-if="article.length > 0">
+      Article: {{ this.article }}
+    </p>
+    <p class="catalog-item__title" @click="$emit('item-selected', id)">
+      {{ this.title }}
+    </p>
+    <p class="catalog-item__description">
+      {{ this.description }}
+    </p>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "CatalogItem",
-        props: {
-            id: Number,
-            images: Array,
-            article: String,
-            title: String,
-            description: String
-        },
-        data() {
-            return {}
-        }
-    }
+import VueTinySlider from 'vue-tiny-slider';
+
+export default {
+  name: "CatalogItem",
+  components: {
+    'tiny-slider': VueTinySlider
+  },
+  props: {
+    id: Number,
+    images: Array,
+    article: String,
+    title: String,
+    description: String,
+    files: Array
+  },
+  data() {
+    return {}
+  }
+}
 </script>
 
 <style scoped lang="scss">
-    @import "../../styles/variables";
+@import "../../styles/variables";
 
-    .catalog-item {
-        display: block;
-        border: 1px solid $main-lightgrey;
-        padding: 20px;
+.catalog-item {
+  display: block;
+  border: 1px solid $main-lightgrey;
+  padding: 20px;
 
-        &__article {
-            margin: 20px 0;
-        }
+  &__article {
+    margin: 20px 0 0;
+  }
 
-        &__title {
-            font-size: 20px;
-            line-height: 1.5;
-            font-weight: 500;
-        }
+  &__title {
+    font-size: 20px;
+    line-height: 1.5;
+    font-weight: 500;
+    margin-top: 20px;
+    cursor: pointer;
+  }
 
-        &__description {
-            margin-top: 17px;
-        }
+  &__description {
+    margin-top: 17px;
+  }
+
+  &-files {
+    &-slider {
+
     }
+  }
+}
+
+#custom-nav {
+  display: flex !important;
+
+  li {
+    width: 19%;
+    margin-right: 5px;
+  }
+}
 </style>

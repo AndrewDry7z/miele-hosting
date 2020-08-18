@@ -11,10 +11,10 @@
           <p class="header-user__name" @click="showProfileActions = !showProfileActions">
             {{ user.first_name }} {{ user.last_name }}
           </p>
-          <img class="header-user__avatar" src="../../assets/images/default_photo.jpg" alt=""
+          <img class="header-user__avatar" :src="this.user.person.photo" :alt="this.user.person.first_name"
                @click="showProfileActions = !showProfileActions">
           <div class="header-user-actions" v-if="showProfileActions">
-            <router-link to="/profile/" class="header-user-actions__profile">View profile</router-link>
+            <router-link to="/profile/" class="header-user-actions__profile" @click="showProfileActions = !showProfileActions">View profile</router-link>
             <p class="header-user-actions__logout" @click="logout">Logout</p>
           </div>
         </div>
@@ -48,7 +48,7 @@ export default {
       return bytes.toString(CryptoJS.enc.Utf8)
     },
     getUserInfo() {
-      fetch(`https://miele-hosting.herokuapp.com/api/users/${this.getActualUserID()}/`, {
+      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -56,8 +56,11 @@ export default {
       })
           .then(response => response.json())
           .then(response => {
-                store.commit('setUserInfo', response)
-                this.user = store.getters.getUserInfo
+                this.user = response
+                if (!this.user.person.photo) {
+                  this.user.person.photo = "/img/default_photo.jpg"
+                }
+                store.commit('setUserInfo', this.user)
               }
           )
           .catch(error => console.log(error))
