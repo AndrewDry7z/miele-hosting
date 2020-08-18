@@ -75,6 +75,22 @@ export default {
     }
   }
 
+  &-flex {
+    display: flex;
+    align-items: center;
+  }
+
+  &-photo {
+    margin-right: 100px;
+    border-radius: 50%;
+
+    img {
+      border-radius: 50%;
+      padding: 5px;
+      border: 10px solid $main-lightgrey;
+    }
+  }
+
   &-name {
     margin-bottom: 50px;
 

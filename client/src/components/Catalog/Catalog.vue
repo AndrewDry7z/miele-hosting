@@ -10,6 +10,7 @@
             <CatalogItem
                 v-for="item in filteredCatalog"
                 :key="item.id"
+                :id="item.id"
                 :title="item.title"
                 :article="item.article"
                 :description="item.description"

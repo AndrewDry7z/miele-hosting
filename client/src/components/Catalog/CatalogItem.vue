@@ -1,12 +1,15 @@
 <template>
   <div class="catalog-item">
-    <tiny-slider class="catalog-item-files-slider slider" :rewind="true" :navAsThumbnails="true"
-                 :navContainer="'#custom-nav'" :controls="false" :nav="true">
+    <tiny-slider class="catalog-item-files-slider slider"
+                 :navAsThumbnails="true"
+                 :navContainer="this.files.length > 1 ? ('#custom-nav' + this.id) : false"
+                 :controls="false"
+                 :nav="this.files.length > 1">
       <div v-for="(item, index) in this.files.slice(0, 5)" :key="index">
         <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
       </div>
     </tiny-slider>
-    <ul class="slider-nav" id="custom-nav" v-if="files.length > 1">
+    <ul class="slider-nav" :id="'custom-nav' + this.id" v-if="files.length > 1">
       <li v-for="(item, index) in this.files.slice(0, 5)" :key="index">
         <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
       </li>
@@ -74,14 +77,14 @@ export default {
 
     }
   }
-}
 
-#custom-nav {
-  display: flex !important;
+  .slider-nav {
+    display: flex !important;
 
-  li {
-    width: 19%;
-    margin-right: 5px;
+    li {
+      width: 19%;
+      margin-right: 5px;
+    }
   }
 }
 </style>
