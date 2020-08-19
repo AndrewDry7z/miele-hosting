@@ -9,12 +9,14 @@
       <div class="header-right">
         <div class="header-user">
           <p class="header-user__name" @click="showProfileActions = !showProfileActions">
-            {{ user.first_name }} {{ user.last_name }}
+            {{ user.first_name }}
           </p>
           <img class="header-user__avatar" :src="this.user.person.photo" :alt="this.user.person.first_name"
                @click="showProfileActions = !showProfileActions">
           <div class="header-user-actions" v-if="showProfileActions">
-            <router-link to="/profile/" class="header-user-actions__profile" @click="showProfileActions = !showProfileActions">View profile</router-link>
+            <router-link :to="'/profile/' + getActualUserID()" class="header-user-actions__profile"
+                         @click="showProfileActions = !showProfileActions">View profile
+            </router-link>
             <p class="header-user-actions__logout" @click="logout">Logout</p>
           </div>
         </div>

@@ -1,18 +1,16 @@
 <template>
-  <main class="profile" :class="editMode ? 'edit' : ''">
+  <main class="profile" :class="editMode ? 'edit' : ''" v-if="localUser">
     <div class="container">
       <div class="profile-flex">
         <div class="profile-photo">
-          <img :src="localUser.person.photo" :alt="localUser.last_name">
+          <img :src="localUser.person.photo" :alt="localUser.first_name">
         </div>
         <div class="profile-data">
           <div class="profile-name">
             <input type="text" name="first_name" v-model="localUser.first_name" :readonly="!editMode"
                    class="profile-name__item" :size="localUser.first_name.length - 2"
                    ref="first_name">
-            <input type="text" name="last_name" v-model="localUser.last_name" :readonly="!editMode"
-                   class="profile-name__item" :size="localUser.last_name.length - 3">
-            <button class="profile-name__trigger" @click="editName">
+            <button class="profile-name__trigger" @click="editName" v-if="isOwnPage()">
               <img src="../../assets/images/icons/pencil-black.svg" alt="Edit">
             </button>
           </div>
@@ -41,13 +39,14 @@
 
 <script>
 import store from '@/store'
+import CryptoJS from "crypto-js";
 
 export default {
   name: "Profile",
   data() {
     return {
-      user: store.getters.getUserInfo,
-      localUser: store.getters.getUserInfo,
+      user: null,
+      localUser: null,
       editMode: false
     }
   },
@@ -55,7 +54,39 @@ export default {
     editName() {
       this.editMode = !this.editMode
       this.$refs.first_name.focus()
+    },
+    getActualUserID() {
+      let bytes = CryptoJS.AES.decrypt(this.$cookies.get('uid'), 'ID')
+      return bytes.toString(CryptoJS.enc.Utf8)
+    },
+    isOwnPage() {
+      return (this.$route.params.id === this.getActualUserID())
+    },
+    getUserInfo() {
+      if (this.isOwnPage()) {
+        this.user = store.getters.getUserInfo
+        this.localUser = this.user
+      } else {
+        fetch(`http://localhost:8000/api/users/${this.$route.params.id}/`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Token ${this.$cookies.get('mieletoken')}`
+          }
+        })
+            .then(response => response.json())
+            .then(response => {
+                  this.localUser = response
+                  if (!this.localUser.person.photo) {
+                    this.localUser.person.photo = "/img/default_photo.jpg"
+                  }
+                }
+            )
+            .catch(error => console.log(error))
+      }
     }
+  },
+  beforeMount() {
+    this.getUserInfo()
   }
 
 }
@@ -83,11 +114,12 @@ export default {
   &-photo {
     margin-right: 100px;
     border-radius: 50%;
+    max-width: 230px;
 
     img {
       border-radius: 50%;
-      padding: 5px;
-      border: 10px solid $main-lightgrey;
+      padding: 10px;
+      border: 5px solid $main-lightgrey;
     }
   }
 

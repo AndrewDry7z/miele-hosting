@@ -19,14 +19,14 @@
           <form class="auth-form" @submit.prevent="loginMode ? login() : register()">
             <div class="auth-form-grid">
               <div v-if="!loginMode">
-                <label for="firstname">First name</label>
-                <input type="text" id="firstname" placeholder="First name" class="auth-form__input"
-                       required v-model="input.firstname">
+                <label for="fullname">Full name</label>
+                <input type="text" id="fullname" placeholder="Full name" class="auth-form__input"
+                       required v-model="input.fullname">
               </div>
               <div v-if="!loginMode">
-                <label for="lastname">Last name</label>
-                <input type="text" id="lastname" placeholder="Last name" class="auth-form__input"
-                       required v-model="input.lastname">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" placeholder="Phone" class="auth-form__input"
+                       required v-model="input.phone">
               </div>
               <div>
                 <label for="email">Email address</label>
@@ -72,8 +72,8 @@ export default {
       input: {
         email: null,
         password: null,
-        firstname: null,
-        lastname: null
+        fullname: null,
+        phone: null
       },
       screenWidth: null,
       showAuthError: false,
@@ -119,10 +119,9 @@ export default {
           username: this.input.email,
           password: this.input.password,
           email: this.input.email,
-          first_name: this.input.firstname,
-          last_name: this.input.lastname,
+          first_name: this.input.fullname,
           person: {
-            phone: null,
+            phone: this.input.phone,
             skype: null,
             photo: null,
             country: null
