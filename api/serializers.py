@@ -23,16 +23,16 @@ class FilesSerializer(serializers.ModelSerializer):
     fields = ['id', 'name', 'file', 'catalog_item']
 
 
+class CountrySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Countries
+    fields = ['id', 'countryname', 'code', 'flag']
+
+
 class PersonSerializer(serializers.ModelSerializer):
   class Meta:
     model = Person
     fields = ['phone', 'skype', 'photo', 'country']
-
-
-class CountrySerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Countries
-    fields = ['countryname', 'code', 'flag']
 
 
 class UserSerializer(serializers.ModelSerializer):

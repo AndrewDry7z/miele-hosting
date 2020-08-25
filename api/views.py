@@ -1,38 +1,55 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Catalog, Tag, File, Countries, Person
-from .serializers import CatalogSerializer, TagSerializer, FilesSerializer, UserSerializer, CountrySerializer, PersonSerializer
+from .serializers import CatalogSerializer, TagSerializer, FilesSerializer, UserSerializer, CountrySerializer, \
+  PersonSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.decorators import action
 
 
 class CatalogViewSet(viewsets.ModelViewSet):
   serializer_class = CatalogSerializer
   queryset = Catalog.objects.all()
-  authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication,)
 
 
 class UserViewSet(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
-  permission_classes = (AllowAny,)
+  #permission_classes = (AllowAny,)
+  authentication_classes = (TokenAuthentication,)
+
 
 
 class TagsViewSet(viewsets.ModelViewSet):
   serializer_class = TagSerializer
   queryset = Tag.objects.all()
-  authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication,)
 
 
-class EmployeeViewSet(viewsets.ModelViewSet):
+class PersonViewSet(viewsets.ModelViewSet):
   serializer_class = PersonSerializer
   queryset = Person.objects.all()
-  authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication,)
+
+  @action(detail=True, methods=['put'])
+  def person(self, request, pk=None):
+    user = self.get_object()
+    person = user.person
+    serializer = UserSerializer(person, data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FilesViewSet(viewsets.ModelViewSet):
