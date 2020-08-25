@@ -32,7 +32,7 @@ class CountrySerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
   class Meta:
     model = Person
-    fields = ['phone', 'skype', 'photo', 'country']
+    fields = ['id', 'phone', 'skype', 'photo', 'country']
 
 
 class UserSerializer(serializers.ModelSerializer):

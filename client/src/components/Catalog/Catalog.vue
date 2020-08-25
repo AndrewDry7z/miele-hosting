@@ -37,6 +37,7 @@
 import CatalogItem from "./CatalogItem";
 import CatalogDetails from "./CatalogDetails";
 import CatalogTags from "@/components/Catalog/CatalogTags";
+import store from '@/store'
 
 export default {
   name: "Catalog",
@@ -73,19 +74,8 @@ export default {
   created() {
     if (this.$cookies.isKey('mieletoken')) {
       this.token = this.$cookies.get('mieletoken')
-      fetch('http://localhost:8000/api/catalog/', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Token ${this.token}`
-        }
-      })
-          .then(response => response.json())
-          .then(response => {
-                this.catalog = response
-                this.filteredCatalog = this.catalog
-              }
-          )
-          .catch(error => console.log(error))
+      this.catalog = store.getters.getCatalog
+      this.filteredCatalog = this.catalog
     } else {
       this.$router.push('/auth/')
     }
@@ -94,7 +84,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "~@/styles/_variables.scss";
 
 .catalog {

@@ -19,8 +19,7 @@
             <div class="profile-country__name grey" v-if="!editMode">
               {{ this.currentCountry.countryname }}
             </div>
-            <select name="country" v-else class="profile-country__list" ref="select" v-model="localUser.person.country"
-                    @change="selectCountry">
+            <select name="country" v-else class="profile-country__list" ref="select" v-model="localUser.person.country">
               <option v-for="(item, index) of this.countriesList" :value="item.id" :key="index">
                 {{ item.countryname }}
               </option>
@@ -30,7 +29,7 @@
             <input type="text" name="first_name" v-model="localUser.first_name" :readonly="!editMode"
                    class="profile-name__item" :size="localUser.first_name.length - 2"
                    ref="first_name">
-            <button class="profile-name__trigger" @click="editName" v-if="isOwnPage()">
+            <button class="profile-name__trigger" @click="editUserInfo" v-if="isOwnPage()">
               <img src="../../assets/images/icons/pencil-black.svg" alt="Edit">
             </button>
           </div>
@@ -54,6 +53,27 @@
           <button class="button--red" @click="updateUserInfo()" v-if="editMode">Save</button>
         </div>
       </div>
+      <div class="profile-files">
+        <h2 class="profile-files__title" v-if="isOwnPage()">My files</h2>
+        <h2 class="profile-files__title" v-else>Files</h2>
+        <div class="catalog-grid">
+          <CatalogItem
+              v-for="item in catalogFilteredByUser"
+              :key="item.id"
+              :id="item.id"
+              :title="item.title"
+              :article="item.article"
+              :description="item.description"
+              :files="item.files"
+              @item-selected="itemSelected(item.id)"
+          />
+        </div>
+      </div>
+      <CatalogDetails
+          :item="selectedItem"
+          @close-details="closeDetails()"
+          @overlay-click="overlayClick($event)"
+      />
     </div>
   </main>
 </template>
@@ -61,9 +81,12 @@
 <script>
 import store from '@/store'
 import CryptoJS from "crypto-js";
+import CatalogItem from "@/components/Catalog/CatalogItem";
+import CatalogDetails from "@/components/Catalog/CatalogDetails";
 
 export default {
   name: "Profile",
+  components: {CatalogDetails, CatalogItem},
   data() {
     return {
       user: null,
@@ -74,13 +97,17 @@ export default {
         errorText: ''
       },
       countriesList: '',
-      currentCountry: ''
+      currentCountry: '',
+      selectedItem: null,
+      catalog: store.getters.getCatalog,
+      catalogFilteredByUser: null
     }
   },
   methods: {
-    editName() {
+    editUserInfo() {
       this.editMode = !this.editMode
       this.$refs.first_name.focus()
+      this.localUser = this.user
     },
     getActualUserID() {
       let bytes = CryptoJS.AES.decrypt(this.$cookies.get('uid'), 'ID')
@@ -108,26 +135,29 @@ export default {
                   }
                 }
             )
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
       }
     },
     uploadPhoto(event) {
-      let body = this.localUser
-      body.person.photo = event.target.files[0] || event.dataTransfer.files
-      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/update_user/`, {
+      let newPhoto = event.target.files[0] || event.dataTransfer.files
+      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Token ${this.$cookies.get('mieletoken')}`
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Token ${this.$cookies.get('mieletoken')}`,
         },
-        body: JSON.stringify(body)
+        body: {
+          photo: newPhoto
+        }
       })
           .then(response => response.json())
           .then(response => {
+                console.log(newPhoto)
+                console.log(response)
                 this.getUserInfo()
               }
           )
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
     },
     updateUserInfo() {
       fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
@@ -142,7 +172,7 @@ export default {
           country: this.localUser.country
         })
       })
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
       fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
@@ -155,7 +185,6 @@ export default {
         })
       })
           .then((response) => {
-                console.log(response)
                 switch (response.status) {
                   case 400:
                     this.error.isError = true
@@ -178,7 +207,7 @@ export default {
                 }
               }
           )
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
     },
     getCountriesList() {
       fetch(`http://localhost:8000/api/countries/`, {
@@ -193,12 +222,27 @@ export default {
                 this.currentCountry = this.countriesList.filter(item => item.id === this.localUser.person.country)[0]
               }
           )
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
     },
+    itemSelected(id) {
+      this.selectedItem = this.catalog.find(item => item.id === id)
+    },
+    closeDetails() {
+      this.selectedItem = null
+    },
+    overlayClick(event) {
+      if (event.target.classList.contains('overlay')) {
+        this.selectedItem = null
+      }
+    },
+    filterCatalogByUser() {
+      this.catalogFilteredByUser = this.catalog.filter(item => item.owner.id.toString() === this.$route.params.id)
+    }
   },
   created() {
     this.getUserInfo()
     this.getCountriesList()
+    this.filterCatalogByUser()
   }
 
 }
@@ -226,13 +270,17 @@ export default {
   &-photo {
     margin-right: 100px;
     border-radius: 50%;
-    max-width: 230px;
+    width: 230px;
+    height: 230px;
     position: relative;
 
     &__image {
       border-radius: 50%;
       padding: 10px;
       border: 5px solid $main-lightgrey;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     &-upload {
@@ -309,6 +357,13 @@ export default {
     }
 
     &__name {
+    }
+  }
+
+  &-files {
+    &__title {
+      font-size: 28px;
+      margin-bottom: 30px;
     }
   }
 }

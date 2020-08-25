@@ -144,7 +144,7 @@ export default {
       })
           .then(response => response.json())
           .then(response => console.log(response))
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
     }
   },
   created() {
@@ -156,7 +156,7 @@ export default {
     })
         .then(response => response.json())
         .then(response => this.tags = response)
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
   }
 }
 </script>

@@ -23,6 +23,7 @@
     <p class="catalog-item__description">
       {{ this.description }}
     </p>
+    <button class="button--red catalog-item__button" @click="$emit('item-selected', id)">See more</button>
   </div>
 </template>
 
@@ -48,7 +49,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "../../styles/variables";
 
 .catalog-item {
@@ -85,6 +86,14 @@ export default {
       width: 19%;
       margin-right: 5px;
     }
+  }
+
+  &__button {
+    display: block;
+    margin-top: 40px;
+    font-weight: 600;
+    width: 170px;
+    height: 38px;
   }
 }
 </style>

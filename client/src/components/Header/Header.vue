@@ -65,7 +65,7 @@ export default {
                 store.commit('setUserInfo', this.user)
               }
           )
-          .catch(error => console.log(error))
+          .catch(error => console.error(error))
     }
   },
   created() {
