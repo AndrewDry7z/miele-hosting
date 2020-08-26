@@ -2,16 +2,16 @@
   <div class="catalog-item">
     <tiny-slider class="catalog-item-files-slider slider"
                  :navAsThumbnails="true"
-                 :navContainer="this.files.length > 1 ? ('#custom-nav' + this.id) : false"
+                 :navContainer="this.previews.length > 1 ? ('#custom-nav' + this.id) : false"
                  :controls="false"
-                 :nav="this.files.length > 1">
-      <div v-for="(item, index) in this.files.slice(0, 5)" :key="index">
-        <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
+                 :nav="this.previews.length > 1">
+      <div v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
+        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item">
       </div>
     </tiny-slider>
-    <ul class="slider-nav" :id="'custom-nav' + this.id" v-if="files.length > 1">
-      <li v-for="(item, index) in this.files.slice(0, 5)" :key="index">
-        <img :src="item.file" :alt="item.name" class="catalog-item-files-slider__item">
+    <ul class="slider-nav" :id="'custom-nav' + this.id" v-if="previews.length > 1">
+      <li v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
+        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item">
       </li>
     </ul>
     <p class="catalog-item__article grey" v-if="article.length > 0">
@@ -41,7 +41,7 @@ export default {
     article: String,
     title: String,
     description: String,
-    files: Array
+    previews: Array,
   },
   data() {
     return {}

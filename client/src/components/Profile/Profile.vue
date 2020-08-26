@@ -54,7 +54,8 @@
         </div>
       </div>
       <div class="profile-files">
-        <h2 class="profile-files__title" v-if="isOwnPage()">My files</h2>
+        <h2 class="profile-files__title" v-if="this.catalogFilteredByUser.length < 1">No files yet</h2>
+        <h2 class="profile-files__title" v-else-if="isOwnPage()">My files</h2>
         <h2 class="profile-files__title" v-else>Files</h2>
         <div class="catalog-grid">
           <CatalogItem
@@ -64,7 +65,7 @@
               :title="item.title"
               :article="item.article"
               :description="item.description"
-              :files="item.files"
+              :previews="item.previews"
               @item-selected="itemSelected(item.id)"
           />
         </div>

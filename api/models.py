@@ -45,8 +45,17 @@ class Tag(models.Model):
 
 class File(models.Model):
   name = models.CharField(max_length=140)
-  file = models.FileField(upload_to='%Y/%m/%d/', blank=False, default=None)
+  file = models.FileField(upload_to='files/%Y/%m/%d/', blank=False, default=None)
   catalog_item = models.ForeignKey(Catalog, related_name='files', on_delete=models.CASCADE)
+
+  def __str__(self):
+    return self.name
+
+
+class Preview(models.Model):
+  name = models.CharField(max_length=140)
+  image = models.ImageField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
+  catalog_item = models.ForeignKey(Catalog, related_name='previews', on_delete=models.CASCADE)
 
   def __str__(self):
     return self.name

@@ -2,9 +2,10 @@
 from __future__ import unicode_literals
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Catalog, Tag, File, Countries, Person
+from .models import Catalog, Tag, File, Countries, Person, Preview
 from .serializers import CatalogSerializer, TagSerializer, FilesSerializer, UserSerializer, CountrySerializer, \
-  PersonSerializer
+  PreviewsSerializer, PersonSerializer
+
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
@@ -24,9 +25,8 @@ class CatalogViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
-  #permission_classes = (AllowAny,)
+  # permission_classes = (AllowAny,)
   authentication_classes = (TokenAuthentication,)
-
 
 
 class TagsViewSet(viewsets.ModelViewSet):
@@ -55,6 +55,12 @@ class PersonViewSet(viewsets.ModelViewSet):
 class FilesViewSet(viewsets.ModelViewSet):
   serializer_class = FilesSerializer
   queryset = File.objects.all()
+  authentication_classes = (TokenAuthentication,)
+
+
+class PreviewsViewSet(viewsets.ModelViewSet):
+  serializer_class = PreviewsSerializer
+  queryset = Preview.objects.all()
   authentication_classes = (TokenAuthentication,)
 
 

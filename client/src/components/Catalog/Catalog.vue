@@ -14,7 +14,7 @@
                 :title="item.title"
                 :article="item.article"
                 :description="item.description"
-                :files="item.files"
+                :previews="item.previews"
                 @item-selected="itemSelected(item.id)"
             />
           </div>

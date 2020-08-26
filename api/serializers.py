@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
-from .models import Catalog, Person, Tag, File, Countries
+from .models import Catalog, Person, Tag, File, Countries, Preview
 from django.contrib.auth.models import User
 
 
@@ -21,6 +21,12 @@ class FilesSerializer(serializers.ModelSerializer):
   class Meta:
     model = File
     fields = ['id', 'name', 'file', 'catalog_item']
+
+
+class PreviewsSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Preview
+    fields = ['id', 'name', 'image', 'catalog_item']
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -58,7 +64,8 @@ class CatalogSerializer(serializers.ModelSerializer):
   owner = PersonSerializer(many=False)
   tags = TagsCatalogSerializer(many=True)
   files = FilesSerializer(many=True)
+  previews = PreviewsSerializer(many=True)
 
   class Meta:
     model = Catalog
-    fields = ['id', 'title', 'description', 'article', 'owner', 'tags', 'files']
+    fields = ['id', 'title', 'description', 'article', 'owner', 'tags', 'files', 'previews']
