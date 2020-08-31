@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Catalog, Tag, File, Countries, Person, Preview
 from .serializers import CatalogSerializer, TagSerializer, FilesSerializer, UserSerializer, CountrySerializer, \
   PreviewsSerializer, PersonSerializer
-
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
@@ -14,7 +12,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.decorators import action
-
+import os
 
 class CatalogViewSet(viewsets.ModelViewSet):
   serializer_class = CatalogSerializer
@@ -25,8 +23,8 @@ class CatalogViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
-  # permission_classes = (AllowAny,)
-  authentication_classes = (TokenAuthentication,)
+  permission_classes = (AllowAny,)
+  # authentication_classes = (TokenAuthentication,)
 
 
 class TagsViewSet(viewsets.ModelViewSet):

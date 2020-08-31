@@ -1,7 +1,7 @@
 <template>
-  <div class="overlay" v-if="this.item" @click="$emit('overlay-click', $event)">
+  <div class="overlay" v-if="this.item" @click="$emit('overlay-click', $event); owner = null">
     <aside class="catalog-details">
-      <button class="catalog-details__close" @click="$emit('close-details')" />
+      <button class="catalog-details__close" @click="$emit('close-details'); owner = null" />
       <router-link to="/">
         <Logo class="catalog-details__logo" />
       </router-link>
@@ -14,7 +14,7 @@
                          :controls="false"
                          :nav="this.item.previews.length > 1">
               <div v-for="(item, index) in this.item.previews.slice(0, 5)" :key="index">
-                <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item">
+                <img :src="item.image" :alt="item.name" class="catalog-details-preview-slider__item">
               </div>
             </tiny-slider>
             <ul class="slider-nav" id="custom-nav-detail" v-if="this.item.previews.length > 1">
@@ -23,8 +23,15 @@
               </li>
             </ul>
           </div>
-          <div class="catalog-details-owner">
-            <p class="catalog-details-owner">Owner</p>
+          <div class="catalog-details-owner" v-if="owner">
+            <p class="catalog-details-owner__heading grey">Owner</p>
+            <router-link :to="'/profile/' + this.item.owner.id" class="catalog-details-owner-person">
+              <img :src="this.owner.person.photo" :alt="this.owner.first_name"
+                   class="catalog-details-owner-person__photo">
+              <p class="catalog-details-owner-person__name">
+                {{ this.owner.first_name }}
+              </p>
+            </router-link>
           </div>
           <div class="catalog-details-tags">
           <span class="catalog-details-tags__item"
@@ -44,6 +51,13 @@
           <p class="catalog-details__description">
             {{ this.item.description }}
           </p>
+          <ul class="catalog-details-files" v-if="item.files.length > 0">
+            <li v-for="(file, index) in item.files" :key="index" class="catalog-details-files__item">
+              <p v-if="file.name.length > 0">{{ file.name }} {{ formatBytes(file.size) }}</p>
+              <p v-else>File {{ file.title }} {{ formatBytes(file.file_size) }}</p>
+              <a :href="file.file" class="button button--red">Download</a>
+            </li>
+          </ul>
         </div>
       </div>
     </aside>
@@ -56,14 +70,56 @@ import VueTinySlider from 'vue-tiny-slider';
 
 export default {
   components: {Logo, 'tiny-slider': VueTinySlider},
+  data() {
+    return {
+      owner: null
+    }
+  },
   props: {
     item: Object
+  },
+  methods: {
+    getItemsOwner(id) {
+      fetch(`http://192.168.1.71:8000/api/users/${id}/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${this.$cookies.get('mieletoken')}`
+        }
+      })
+          .then(response => response.json())
+          .then(response => {
+                this.owner = response
+                if (!this.owner.person.photo) {
+                  this.owner.person.photo = "/img/default_photo.jpg"
+                }
+              }
+          )
+          .catch(error => console.error(error))
+    },
+    formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return '0 Bytes';
+
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+  },
+  beforeUpdate() {
+    if ((this.item) && (!this.owner)) {
+      this.getItemsOwner(this.item.owner.id)
+    }
   },
   name: "CatalogDetails"
 }
 </script>
 
 <style scoped lang="scss">
+@import "../../styles/variables";
+
 .overlay {
   position: fixed;
   width: 100%;
@@ -156,10 +212,74 @@ export default {
 
   &-preview {
     width: 70%;
+
+    &-slider {
+      &__item {
+        padding-left: 1px;
+        margin-left: -1px;
+        width: 100%;
+      }
+    }
   }
 
   &-owner {
     margin-top: 40px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid $main-lightgrey;
+
+    &__heading {
+      display: flex;
+
+      &:after {
+        content: '';
+        border-bottom: 1px solid $main-lightgrey;
+        width: 88%;
+        margin-left: auto;
+        display: block;
+      }
+    }
+
+    &-person {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      text-decoration: none;
+
+      &__photo {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        padding: 2px;
+        border: 1px solid $main-lightgrey;
+        margin-right: 16px;
+      }
+
+      &__name {
+        font-size: 15px;
+        font-weight: 600;
+        color: $main-black;
+      }
+    }
+  }
+
+  &-files {
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 170px;
+        height: 38px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+    }
   }
 }
 </style>

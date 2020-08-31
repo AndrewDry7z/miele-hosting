@@ -11,7 +11,7 @@
 <script>
 import Header from "./components/Header/Header"
 import Footer from "@/components/Footer/Footer"
-import store from '@/store'
+//import store from '@/store'
 
 export default {
   data() {
@@ -21,10 +21,8 @@ export default {
   },
   methods: {
     redirectToAuthPage() {
-      if (!this.hasToken) {
+      if ((!this.hasToken) && (this.$router.currentRoute.name !== 'Auth')) {
         this.$router.push('/auth/')
-      } else {
-
       }
     }
   },
@@ -34,7 +32,6 @@ export default {
   },
   created() {
     this.redirectToAuthPage()
-    store.commit('setCatalog', this.$cookies.get('mieletoken'))
   }
 }
 </script>

@@ -44,8 +44,9 @@ class Tag(models.Model):
 
 
 class File(models.Model):
-  name = models.CharField(max_length=140)
+  name = models.CharField(max_length=140, blank=True)
   file = models.FileField(upload_to='files/%Y/%m/%d/', blank=False, default=None)
+  size = models.IntegerField(default=0, editable=False)
   catalog_item = models.ForeignKey(Catalog, related_name='files', on_delete=models.CASCADE)
 
   def __str__(self):

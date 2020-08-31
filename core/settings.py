@@ -16,7 +16,7 @@ DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = [
   'localhost',
-  '192.168.1.70',
+  '192.168.1.71',
   'miele-hosting.herokuapp.com'
 ]
 

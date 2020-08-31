@@ -3,7 +3,7 @@
     <div class="container">
       <div class="profile-flex">
         <div class="profile-photo">
-          <img :src="localUser.person.photo" :alt="localUser.first_name" class="profile-photo__image">
+          <img :src="this.localUser.person.photo" :alt="localUser.first_name" class="profile-photo__image">
           <label for="uploadPhoto" class="profile-photo-upload" v-if="isOwnPage()">
             <input type="file" accept="image/jpeg, image/png" class="profile-photo-upload__input" id="uploadPhoto"
                    @change="uploadPhoto($event)">
@@ -122,7 +122,7 @@ export default {
         this.user = store.getters.getUserInfo
         this.localUser = this.user
       } else {
-        fetch(`http://localhost:8000/api/users/${this.$route.params.id}/`, {
+        fetch(`http://192.168.1.71:8000/api/users/${this.$route.params.id}/`, {
           method: 'GET',
           headers: {
             'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -141,7 +141,7 @@ export default {
     },
     uploadPhoto(event) {
       let newPhoto = event.target.files[0] || event.dataTransfer.files
-      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`http://192.168.1.71:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -161,7 +161,7 @@ export default {
           .catch(error => console.error(error))
     },
     updateUserInfo() {
-      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`http://192.168.1.71:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export default {
         })
       })
           .catch(error => console.error(error))
-      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
+      fetch(`http://192.168.1.71:8000/api/users/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ export default {
           .catch(error => console.error(error))
     },
     getCountriesList() {
-      fetch(`http://localhost:8000/api/countries/`, {
+      fetch(`http://192.168.1.71:8000/api/countries/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -244,8 +244,13 @@ export default {
     this.getUserInfo()
     this.getCountriesList()
     this.filterCatalogByUser()
-  }
-
+  },
+  watch: {
+    '$route.params.id': function () {
+      this.getUserInfo()
+      this.filterCatalogByUser()
+    }
+  },
 }
 </script>
 

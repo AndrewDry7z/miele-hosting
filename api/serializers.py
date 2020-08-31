@@ -3,6 +3,9 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
 from .models import Catalog, Person, Tag, File, Countries, Preview
 from django.contrib.auth.models import User
+import os
+from core import settings
+
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -18,9 +21,18 @@ class TagsCatalogSerializer(serializers.ModelSerializer):
 
 
 class FilesSerializer(serializers.ModelSerializer):
+  file_size = serializers.SerializerMethodField()
+  title = serializers.SerializerMethodField()
+
   class Meta:
     model = File
-    fields = ['id', 'name', 'file', 'catalog_item']
+    fields = ['id', 'name', 'title', 'file', 'file_size', 'catalog_item']
+
+  def get_file_size(self, obj):
+    return os.path.getsize(settings.BASE_DIR + obj.file.url)
+
+  def get_title(self, obj):
+    return os.path.basename(settings.BASE_DIR + obj.file.url)
 
 
 class PreviewsSerializer(serializers.ModelSerializer):

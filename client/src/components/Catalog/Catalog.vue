@@ -44,10 +44,10 @@ export default {
   components: {CatalogTags, CatalogDetails, CatalogItem},
   data() {
     return {
-      catalog: [],
+      catalog: store.getters.getCatalog,
       selectedItem: null,
-      token: '',
-      filteredCatalog: []
+      token: this.$cookies.get('mieletoken'),
+      filteredCatalog: store.getters.getCatalog
     }
   },
   methods: {
@@ -74,12 +74,16 @@ export default {
   created() {
     if (this.$cookies.isKey('mieletoken')) {
       this.token = this.$cookies.get('mieletoken')
+      store.commit('setCatalog', this.token)
       this.catalog = store.getters.getCatalog
       this.filteredCatalog = this.catalog
     } else {
       this.$router.push('/auth/')
     }
-
+  },
+  beforeMount() {
+    store.commit('setCatalog', this.token)
+    this.catalog = store.getters.getCatalog
   }
 }
 </script>

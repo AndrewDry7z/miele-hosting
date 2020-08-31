@@ -4,7 +4,7 @@ export default {
     },
     mutations: {
         setCatalog(state, token) {
-            fetch('http://localhost:8000/api/catalog/', {
+            fetch('http://192.168.1.71:8000/api/catalog/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`
