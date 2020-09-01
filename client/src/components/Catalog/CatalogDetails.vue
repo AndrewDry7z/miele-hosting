@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay" v-if="this.item" @click="$emit('overlay-click', $event); owner = null">
+  <div class="overlay" v-if="this.item" @click="overlayClick($event)">
     <aside class="catalog-details">
       <button class="catalog-details__close" @click="$emit('close-details'); owner = null" />
       <router-link to="/">
@@ -36,7 +36,7 @@
           <div class="catalog-details-tags">
           <span class="catalog-details-tags__item"
                 v-for="tag of this.item.tags"
-                :key="tag.id">
+                :key="tag.id" @click="chooseTag(tag.id)">
             {{ tag.name }}
           </span>
           </div>
@@ -53,7 +53,7 @@
           </p>
           <ul class="catalog-details-files" v-if="item.files.length > 0">
             <li v-for="(file, index) in item.files" :key="index" class="catalog-details-files__item">
-              <p v-if="file.name.length > 0">{{ file.name }} {{ formatBytes(file.size) }}</p>
+              <p v-if="file.name.length > 0">{{ file.name }} {{ formatBytes(file.file_size) }}</p>
               <p v-else>File {{ file.title }} {{ formatBytes(file.file_size) }}</p>
               <a :href="file.file" class="button button--red">Download</a>
             </li>
@@ -67,6 +67,7 @@
 <script>
 import Logo from "@/components/Logo/Logo";
 import VueTinySlider from 'vue-tiny-slider';
+import store from '@/store'
 
 export default {
   components: {Logo, 'tiny-slider': VueTinySlider},
@@ -106,6 +107,25 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k));
 
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    },
+    chooseTag(tagID) {
+      this.owner = null
+      store.commit('selectTag', tagID)
+      this.$emit('tag-select', tagID)
+      this.$emit('close-details');
+
+      if (this.$route.name !== 'Home') {
+        this.$router.push('/')
+        store.commit('selectTag', tagID)
+      }
+    },
+    overlayClick(event) {
+      if (event.target.classList.contains('overlay')) {
+        this.$emit('overlay-click', event)
+        this.owner = null
+      } else {
+        return false
+      }
     }
   },
   beforeUpdate() {

@@ -19,13 +19,12 @@
             />
           </div>
         </div>
-        <CatalogTags :token="token"
-                     @tag-select="filterByTag($event)"
-        />
+        <CatalogTags :token="token" @tag-select="filterByTag($event)" />
         <CatalogDetails
             :item="selectedItem"
             @close-details="closeDetails()"
             @overlay-click="overlayClick($event)"
+            @tag-select="filterByTag($event)"
         />
       </div>
     </div>
@@ -47,7 +46,8 @@ export default {
       catalog: store.getters.getCatalog,
       selectedItem: null,
       token: this.$cookies.get('mieletoken'),
-      filteredCatalog: store.getters.getCatalog
+      filteredCatalog: store.getters.getCatalog,
+      selectedTag: store.getters.getSelectedTag
     }
   },
   methods: {
@@ -62,10 +62,15 @@ export default {
         this.selectedItem = null
       }
     },
-    filterByTag(tag) {
-      this.filteredCatalog = []
+    filterByTag() {
+      this.selectedTag = store.getters.getSelectedTag
+      if (this.selectedTag) {
+        this.filteredCatalog = []
+      } else {
+        this.filteredCatalog = this.catalog
+      }
       for (let item of this.catalog) {
-        if (item.tags.some(tagItem => tagItem.id === tag.id)) {
+        if (item.tags.some(tagItem => tagItem.id === this.selectedTag)) {
           this.filteredCatalog.push(item)
         }
       }
@@ -77,6 +82,7 @@ export default {
       store.commit('setCatalog', this.token)
       this.catalog = store.getters.getCatalog
       this.filteredCatalog = this.catalog
+      this.selectedTag = null
     } else {
       this.$router.push('/auth/')
     }

@@ -15,11 +15,13 @@
           </div>
           <div class="profile-country">
             <img :src="this.currentCountry.flag" :alt="this.currentCountry.code" class="profile-country__flag"
-                 v-if="!editMode">
-            <div class="profile-country__name grey" v-if="!editMode">
+                 v-if="!editMode && this.currentCountry">
+            <div class="profile-country__name grey" v-if="!editMode && this.currentCountry">
               {{ this.currentCountry.countryname }}
             </div>
-            <select name="country" v-else class="profile-country__list" ref="select" v-model="localUser.person.country">
+            <span class="profile-country__select" v-if="!currentCountry && editMode">Select your country: </span>
+            <select name="country" v-if="editMode" class="profile-country__list" ref="select"
+                    v-model="localUser.person.country">
               <option v-for="(item, index) of this.countriesList" :value="item.id" :key="index">
                 {{ item.countryname }}
               </option>
@@ -98,7 +100,7 @@ export default {
         errorText: ''
       },
       countriesList: '',
-      currentCountry: '',
+      currentCountry: null,
       selectedItem: null,
       catalog: store.getters.getCatalog,
       catalogFilteredByUser: null
@@ -362,7 +364,8 @@ export default {
       margin-right: 10px;
     }
 
-    &__name {
+    &__select {
+      margin-right: 12px;
     }
   }
 

@@ -68,7 +68,7 @@ export default {
           .catch(error => console.error(error))
     }
   },
-  created() {
+  beforeMount() {
     this.getUserInfo()
   }
 }
