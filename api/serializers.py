@@ -53,6 +53,12 @@ class PersonSerializer(serializers.ModelSerializer):
     fields = ['id', 'phone', 'skype', 'photo', 'country']
 
 
+class CatalogItemOwnerSerializer(serializers.ModelSerializer):
+  owner = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), required=False)
+  class Meta:
+    model = Person
+
+
 class UserSerializer(serializers.ModelSerializer):
   person = PersonSerializer(many=False)
 
@@ -73,7 +79,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CatalogSerializer(serializers.ModelSerializer):
-  owner = PersonSerializer(many=False)
+  owner = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), required=False)
   tags = TagsCatalogSerializer(many=True)
   files = FilesSerializer(many=True)
   previews = PreviewsSerializer(many=True)
