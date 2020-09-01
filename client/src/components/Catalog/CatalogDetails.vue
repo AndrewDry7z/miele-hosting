@@ -25,7 +25,7 @@
           </div>
           <div class="catalog-details-owner" v-if="owner">
             <p class="catalog-details-owner__heading grey">Owner</p>
-            <router-link :to="'/profile/' + this.item.owner.id" class="catalog-details-owner-person">
+            <router-link :to="'/profile/' + this.item.owner" class="catalog-details-owner-person">
               <img :src="this.owner.person.photo" :alt="this.owner.first_name"
                    class="catalog-details-owner-person__photo">
               <p class="catalog-details-owner-person__name">
@@ -130,7 +130,7 @@ export default {
   },
   beforeUpdate() {
     if ((this.item) && (!this.owner)) {
-      this.getItemsOwner(this.item.owner.id)
+      this.getItemsOwner(this.item.owner)
     }
   },
   name: "CatalogDetails"

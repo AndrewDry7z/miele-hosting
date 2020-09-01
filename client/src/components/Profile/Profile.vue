@@ -239,7 +239,7 @@ export default {
       }
     },
     filterCatalogByUser() {
-      this.catalogFilteredByUser = this.catalog.filter(item => item.owner.id.toString() === this.$route.params.id)
+      this.catalogFilteredByUser = this.catalog.filter(item => item.owner.toString() === this.$route.params.id)
     }
   },
   created() {
