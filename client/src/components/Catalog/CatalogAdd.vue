@@ -4,9 +4,9 @@
       <h1 class="catalog-add__title">
         Add files
       </h1>
-      <form class="catalog-add-form" @submit.prevent="addFileFormSubmit()" enctype="multipart/form-data">
+      <form class="catalog-add-form" @submit.prevent="addCatalogItemFormSubmit()" enctype="multipart/form-data">
         <p class="catalog-add-form__heading">
-          Upload files
+          Upload preview
         </p>
         <div class="catalog-add-form-flex">
           <div class="catalog-add-form-file">
@@ -69,8 +69,10 @@
             </div>
 
             <button type="submit" class="button--red catalog-add-form__button">
-              + Add files
+              Save
             </button>
+
+
             <span id="or">or </span>
             <router-link to="/" class="catalog-add-form__cancel">Cancel</router-link>
           </fieldset>
@@ -81,6 +83,7 @@
 </template>
 
 <script>
+import store from '@/store'
 
 export default {
 
@@ -96,9 +99,10 @@ export default {
         title: '',
         description: '',
         article: '',
-        owner: 1
+        owner: null
       },
-      token: this.$cookies.get('mieletoken')
+      newItemID: null,
+      token: null
     }
   },
   methods: {
@@ -125,9 +129,91 @@ export default {
         return f != file;
       });
     },
-    addFileFormSubmit() {
+    addTags() {
+      let existingTagNames = []
+
+      for (let tag of this.tags) {
+        existingTagNames.push(tag.name)
+      }
+
+      let newTagNamesArray = this.selectedTags.filter(name => !existingTagNames.includes(name))
+
+      let token = this.token
+      let newItemID = this.newItemID
+
+      //adding new tags
+      new Promise((resolve) => {
+        for (let newTagName of newTagNamesArray) {
+          let upload = async function (item) {
+            let response = await fetch(`http://localhost:8000/api/tags/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+              },
+              body: JSON.stringify({
+                name: item,
+                catalog_items: [newItemID]
+              })
+            })
+                .catch(error => console.error(error))
+            return await response.json()
+          }
+          upload(newTagName)
+              .then(response => console.log(response));
+          // todo: check if database still locked after host on production
+        }
+        resolve();
+      })
+          .then(() => {
+            let existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
+            for (let tag of this.tags) {
+              if (existingSelectedTagNamesArray.includes(tag.name)) {
+                tag.catalog_items.push(newItemID)
+                let upload = async function (item) {
+                  let response = await fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
+                    method: 'PATCH',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Token ${token}`
+                    },
+                    body: JSON.stringify({
+                      catalog_items: item
+                    })
+                  })
+                      .catch(error => console.error(error))
+                  return await response.json()
+                }
+                upload(tag.catalog_items)
+                    .then(response => console.log(response));
+              }
+            }
+          })
+
+
+      //updating existing tags
+
+      /*this.tags.forEach(async tag => {
+        if (existingSelectedTagNamesArray.includes(tag.name)) {
+          tag.catalog_items.push(newItemID)
+          fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({
+              catalog_items: tag.catalog_items
+            })
+          })
+              .catch(error => console.error(error))
+        }
+      })*/
+
+    },
+    addCatalogItemFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
-      fetch(`http://192.168.1.71:8000/api/catalog/`, {
+      fetch(`http://localhost:8000/api/catalog/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,18 +223,25 @@ export default {
           title: this.formData.title,
           description: this.formData.description,
           article: this.formData.article,
-          tags: this.selectedTags,
-          files: this.files,
-          owner: this.formData.owner
+          tags: [],
+          files: [],
+          previews: [],
+          owner: this.owner
         })
       })
           .then(response => response.json())
-          .then(response => console.log(response))
+          .then(response => {
+            this.newItemID = response.id
+            store.commit('setCatalog', this.token)
+            this.addTags()
+          })
           .catch(error => console.error(error))
     }
   },
   created() {
-    fetch('http://192.168.1.71:8000/api/tags/', {
+    this.token = this.$cookies.get('mieletoken')
+    this.owner = store.getters.getUserInfo.id
+    fetch('http://localhost:8000/api/tags/', {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`

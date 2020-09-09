@@ -80,9 +80,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CatalogSerializer(serializers.ModelSerializer):
   owner = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), required=False)
-  tags = TagsCatalogSerializer(many=True)
-  files = FilesSerializer(many=True)
-  previews = PreviewsSerializer(many=True)
+  tags = TagsCatalogSerializer(many=True, read_only=True)
+  files = FilesSerializer(many=True, read_only=True)
+  previews = PreviewsSerializer(many=True, read_only=True)
 
   class Meta:
     model = Catalog

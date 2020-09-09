@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     getItemsOwner(id) {
-      fetch(`http://192.168.1.71:8000/api/users/${id}/`, {
+      fetch(`http://localhost:8000/api/users/${id}/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`

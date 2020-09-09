@@ -124,7 +124,7 @@ export default {
         this.user = store.getters.getUserInfo
         this.localUser = this.user
       } else {
-        fetch(`http://192.168.1.71:8000/api/users/${this.$route.params.id}/`, {
+        fetch(`http://localhost:8000/api/users/${this.$route.params.id}/`, {
           method: 'GET',
           headers: {
             'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -143,7 +143,7 @@ export default {
     },
     uploadPhoto(event) {
       let newPhoto = event.target.files[0] || event.dataTransfer.files
-      fetch(`http://192.168.1.71:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -163,7 +163,7 @@ export default {
           .catch(error => console.error(error))
     },
     updateUserInfo() {
-      fetch(`http://192.168.1.71:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default {
         })
       })
           .catch(error => console.error(error))
-      fetch(`http://192.168.1.71:8000/api/users/${this.getActualUserID()}/`, {
+      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ export default {
           .catch(error => console.error(error))
     },
     getCountriesList() {
-      fetch(`http://192.168.1.71:8000/api/countries/`, {
+      fetch(`http://localhost:8000/api/countries/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`

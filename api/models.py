@@ -29,7 +29,7 @@ class Catalog(models.Model):
   title = models.CharField(max_length=200, unique=True)
   description = models.TextField(blank=True)
   article = models.CharField(max_length=40, blank=True)
-  owner = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
+  owner = models.ForeignKey(Person, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
 
   def __str__(self):
     return self.title
@@ -54,7 +54,7 @@ class File(models.Model):
 
 
 class Preview(models.Model):
-  name = models.CharField(max_length=140)
+  name = models.CharField(max_length=140, blank=True)
   image = models.ImageField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
   catalog_item = models.ForeignKey(Catalog, related_name='previews', on_delete=models.CASCADE)
 

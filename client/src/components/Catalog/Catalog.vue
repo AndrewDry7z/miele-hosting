@@ -90,6 +90,9 @@ export default {
   beforeMount() {
     store.commit('setCatalog', this.token)
     this.catalog = store.getters.getCatalog
+  },
+  updated() {
+    store.commit('setCatalog', this.token)
   }
 }
 </script>

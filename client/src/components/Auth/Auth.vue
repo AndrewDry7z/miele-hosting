@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     login() {
-      fetch(`http://192.168.1.71:8000/auth/`, {
+      fetch(`http://localhost:8000/auth/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ export default {
           })
     },
     register() {
-      fetch(`http://192.168.1.71:8000/api/users/`, {
+      fetch(`http://localhost:8000/api/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
