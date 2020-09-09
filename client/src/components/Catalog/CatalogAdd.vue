@@ -21,7 +21,7 @@
             </label>
             <input type="file" id="fileInput" name="files[]" multiple class="fileInput" @change="clickAddFile($event)">
             <ul class="dragndrop-preview">
-              <li v-for="(file, index) in files" :key="index">
+              <li v-for="(file, index) in previews" :key="index">
                 {{ file.name }}
                 <button @click="removeFile(file)" title="Remove">X</button>
               </li>
@@ -94,7 +94,7 @@ export default {
       tags: [],
       selectedTags: [],
       tagInput: null,
-      files: [],
+      previews: [],
       formData: {
         title: '',
         description: '',
@@ -114,18 +114,18 @@ export default {
       let droppedFiles = e.dataTransfer.files;
       if (!droppedFiles) return;
       ([...droppedFiles]).forEach(f => {
-        this.files.push(f);
+        this.previews.push(f);
       });
     },
     clickAddFile(event) {
       let droppedFiles = event.target.files;
       if (!droppedFiles) return;
       ([...droppedFiles]).forEach(f => {
-        this.files.push(f);
+        this.previews.push(f);
       });
     },
     removeFile(file) {
-      this.files = this.files.filter(f => {
+      this.previews = this.previews.filter(f => {
         return f != file;
       });
     },
@@ -143,22 +143,22 @@ export default {
 
       //adding new tags
       new Promise((resolve) => {
-        for (let newTagName of newTagNamesArray) {
-          let upload = async function (item) {
-            let response = await fetch(`http://localhost:8000/api/tags/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-              },
-              body: JSON.stringify({
-                name: item,
-                catalog_items: [newItemID]
-              })
+        let upload = async function (item) {
+          let response = await fetch(`http://localhost:8000/api/tags/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({
+              name: item,
+              catalog_items: [newItemID]
             })
-                .catch(error => console.error(error))
-            return await response.json()
-          }
+          })
+              .catch(error => console.error(error))
+          return await response.json()
+        }
+        for (let newTagName of newTagNamesArray) {
           upload(newTagName)
               .then(response => console.log(response));
           // todo: check if database still locked after host on production
@@ -166,49 +166,32 @@ export default {
         resolve();
       })
           .then(() => {
-            let existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
+            //updating existing tags
+            const existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
+            const upload = async function (item) {
+              let response = await fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify({
+                  catalog_items: item
+                })
+              })
+                  .catch(error => console.error(error))
+              return await response.json()
+            }
             for (let tag of this.tags) {
               if (existingSelectedTagNamesArray.includes(tag.name)) {
                 tag.catalog_items.push(newItemID)
-                let upload = async function (item) {
-                  let response = await fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
-                    method: 'PATCH',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Token ${token}`
-                    },
-                    body: JSON.stringify({
-                      catalog_items: item
-                    })
-                  })
-                      .catch(error => console.error(error))
-                  return await response.json()
-                }
                 upload(tag.catalog_items)
                     .then(response => console.log(response));
               }
             }
           })
-
-
-      //updating existing tags
-
-      /*this.tags.forEach(async tag => {
-        if (existingSelectedTagNamesArray.includes(tag.name)) {
-          tag.catalog_items.push(newItemID)
-          fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Token ${token}`
-            },
-            body: JSON.stringify({
-              catalog_items: tag.catalog_items
-            })
-          })
-              .catch(error => console.error(error))
-        }
-      })*/
+    },
+    uploadPreviews() {
 
     },
     addCatalogItemFormSubmit() {
