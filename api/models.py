@@ -50,11 +50,11 @@ class File(models.Model):
   catalog_item = models.ForeignKey(Catalog, related_name='files', on_delete=models.CASCADE)
 
   def __str__(self):
-    return self.name
+    return self.catalog_item
 
 
 class Preview(models.Model):
-  image = models.FileField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
+  image = models.ImageField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
   catalog_item = models.ForeignKey(Catalog, related_name='previews', on_delete=models.CASCADE)
 
   def __str__(self):

@@ -10,7 +10,7 @@
         </p>
         <div class="catalog-add-form-flex">
           <div class="catalog-add-form-file">
-            <label class="dragndrop-area" ref="fileform" for="fileInput" v-cloak @drop.prevent="addFile"
+            <label class="dragndrop-area" ref="fileform" for="fileInput" v-cloak @drop.prevent="addPreview"
                    @dragover.prevent>
               Drag and Drop here <br />
               or <br />
@@ -20,7 +20,7 @@
                    alt="Drag N Drop Files Here">
             </label>
             <input type="file" id="fileInput" name="files[]" multiple accept="image/jpeg, image/png" class="fileInput"
-                   @change="clickAddFile($event)">
+                   @change="clickAddPreview($event)">
             <ul class="dragndrop-preview">
               <li v-for="(file, index) in previews" :key="index">
                 {{ file.name }}
@@ -69,13 +69,30 @@
               </div>
             </div>
 
-            <button type="submit" class="button--red catalog-add-form__button">
-              Save
-            </button>
+            <div class="catalog-add-form-buttons">
+              <button type="submit" class="button--red catalog-add-form__button">
+                Save
+              </button>
+
+              <label role="button" class="button--grey catalog-add-form__button">
+                + Add files
+                <input type="file" multiple hidden @change="clickAddFiles($event)">
+              </label>
+
+              <div class="catalog-add-form__goback">
+                <span id="or">or </span>
+                <router-link to="/" class="catalog-add-form__cancel">Cancel</router-link>
+              </div>
+            </div>
+
+            <ul class="files-preview">
+              <li v-for="(file, index) in files" :key="index">
+                {{ file.name }}
+                <button @click="removeFile(file)" title="Remove">X</button>
+              </li>
+            </ul>
 
 
-            <span id="or">or </span>
-            <router-link to="/" class="catalog-add-form__cancel">Cancel</router-link>
           </fieldset>
         </div>
       </form>
@@ -96,6 +113,7 @@ export default {
       selectedTags: [],
       tagInput: null,
       previews: [],
+      files: [],
       formData: {
         title: '',
         description: '',
@@ -111,22 +129,32 @@ export default {
       this.selectedTags.push(this.tagInput)
       this.tagInput = null
     },
-    addFile(e) {
-      let droppedFiles = e.dataTransfer.files;
-      if (!droppedFiles) return;
-      ([...droppedFiles]).forEach(f => {
+    addPreview(e) {
+      let droppedImages = e.dataTransfer.files;
+      if (!droppedImages) return;
+      ([...droppedImages]).forEach(f => {
         this.previews.push(f);
       });
     },
-    clickAddFile(event) {
-      let droppedFiles = event.target.files;
-      if (!droppedFiles) return;
-      ([...droppedFiles]).forEach(f => {
+    clickAddPreview(event) {
+      let selectedImages = event.target.files;
+      if (!selectedImages) return;
+      ([...selectedImages]).forEach(f => {
         this.previews.push(f);
+      });
+    },
+    clickAddFiles(event) {
+      let selectedFiles = event.target.files;
+      if (!selectedFiles) return;
+      ([...selectedFiles]).forEach(f => {
+        this.files.push(f);
       });
     },
     removeFile(file) {
       this.previews = this.previews.filter(f => {
+        return f != file;
+      });
+      this.files = this.files.filter(f => {
         return f != file;
       });
     },
@@ -213,6 +241,27 @@ export default {
         upload(image).then(response => console.log(response))
       }
     },
+    uploadFiles() {
+      let token = this.token
+      let newItemID = this.newItemID
+      let headers = new Headers()
+      headers.append("Authorization", `Token ${token}`);
+      const upload = async function (file) {
+        let formdata = new FormData();
+        formdata.append("catalog_item", newItemID)
+        formdata.append("file", file)
+        let response = await fetch("http://localhost:8000/api/files/", {
+          method: 'POST',
+          headers: headers,
+          body: formdata,
+          redirect: 'follow'
+        })
+        return await response.json()
+      }
+      for (let file of this.files) {
+        upload(file).then(response => console.log(response))
+      }
+    },
     addCatalogItemFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
       fetch(`http://localhost:8000/api/catalog/`, {
@@ -242,6 +291,9 @@ export default {
           })
           .then(() => {
             this.uploadPreviews()
+          })
+          .then(() => {
+            this.uploadFiles()
           })
           .catch(error => console.error(error))
     }
@@ -319,10 +371,9 @@ export default {
       }
 
       &__button {
-        margin-top: 50px;
         font-size: 15px;
         font-weight: 600;
-        display: inline-block;
+        width: 200px;
       }
 
       &__cancel {
@@ -366,6 +417,22 @@ export default {
 
       &-file {
         position: relative;
+      }
+
+      &-buttons {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        label {
+          margin: 0 0 0 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 15px;
+          width: 200px;
+        }
       }
     }
 
