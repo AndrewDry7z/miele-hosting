@@ -120,6 +120,7 @@ export default {
       return (this.$route.params.id === this.getActualUserID())
     },
     getUserInfo() {
+      store.commit('updateUserInfo', [this.token, this.getActualUserID()])
       if (this.isOwnPage()) {
         this.user = store.getters.getUserInfo
         this.localUser = this.user
@@ -143,21 +144,19 @@ export default {
     },
     uploadPhoto(event) {
       let newPhoto = event.target.files[0] || event.dataTransfer.files
+      let headers = new Headers()
+      headers.append('Authorization', `Token ${this.$cookies.get('mieletoken')}`)
+      let formdata = new FormData()
+      formdata.append('photo', newPhoto)
       fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Token ${this.$cookies.get('mieletoken')}`,
-        },
-        body: {
-          photo: newPhoto
-        }
+        headers: headers,
+        body: formdata
       })
           .then(response => response.json())
           .then(response => {
-                console.log(newPhoto)
-                console.log(response)
                 this.getUserInfo()
+                this.localUser.person = response
               }
           )
           .catch(error => console.error(error))
@@ -176,41 +175,44 @@ export default {
         })
       })
           .catch(error => console.error(error))
-      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.$cookies.get('mieletoken')}`
-        },
-        body: JSON.stringify({
-          first_name: this.localUser.first_name,
-          email: this.localUser.email
-        })
-      })
-          .then((response) => {
-                switch (response.status) {
-                  case 400:
-                    this.error.isError = true
-                    this.error.errorText = 'Data you entered is not valid'
-                    break;
-                  case 500:
-                    this.error.isError = true
-                    this.error.errorText = 'Server internal error. Please try again later'
-                    break;
-                  case 200:
-                    this.error.isError = false
-                    this.editMode = false
-                    store.commit('setUserInfo', this.localUser)
-                    this.getUserInfo()
-                    this.getCountriesList()
-                    break;
-                  default:
-                    this.error.isError = true
-                    this.error.errorText = `Something is wrong. Code ${response.status}. Please contact site admin`
-                }
-              }
-          )
-          .catch(error => console.error(error))
+          .then(() => {
+            fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.$cookies.get('mieletoken')}`
+              },
+              body: JSON.stringify({
+                first_name: this.localUser.first_name,
+                email: this.localUser.email
+              })
+            })
+                .then((response) => {
+                      switch (response.status) {
+                        case 400:
+                          this.error.isError = true
+                          this.error.errorText = 'Data you entered is not valid'
+                          break;
+                        case 500:
+                          this.error.isError = true
+                          this.error.errorText = 'Server internal error. Please try again later'
+                          break;
+                        case 200:
+                          this.error.isError = false
+                          this.editMode = false
+                          store.commit('setUserInfo', this.localUser)
+                          this.getUserInfo()
+                          this.getCountriesList()
+                          break;
+                        default:
+                          this.error.isError = true
+                          this.error.errorText = `Something is wrong. Code ${response.status}. Please contact site admin`
+                      }
+                    }
+                )
+                .catch(error => console.error(error))
+          })
+
     },
     getCountriesList() {
       fetch(`http://localhost:8000/api/countries/`, {

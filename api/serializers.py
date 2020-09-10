@@ -38,7 +38,7 @@ class FilesSerializer(serializers.ModelSerializer):
 class PreviewsSerializer(serializers.ModelSerializer):
   class Meta:
     model = Preview
-    fields = ['id', 'name', 'image', 'catalog_item']
+    fields = ['id', 'image', 'catalog_item']
 
 
 class CountrySerializer(serializers.ModelSerializer):

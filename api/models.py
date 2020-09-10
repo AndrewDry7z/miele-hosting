@@ -54,8 +54,7 @@ class File(models.Model):
 
 
 class Preview(models.Model):
-  name = models.CharField(max_length=140, blank=True)
-  image = models.ImageField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
+  image = models.FileField(upload_to='previews/%Y/%m/%d/', blank=False, default=None)
   catalog_item = models.ForeignKey(Catalog, related_name='previews', on_delete=models.CASCADE)
 
   def __str__(self):

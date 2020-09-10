@@ -19,7 +19,8 @@
                    class="dragndrop-area__image"
                    alt="Drag N Drop Files Here">
             </label>
-            <input type="file" id="fileInput" name="files[]" multiple class="fileInput" @change="clickAddFile($event)">
+            <input type="file" id="fileInput" name="files[]" multiple accept="image/jpeg, image/png" class="fileInput"
+                   @change="clickAddFile($event)">
             <ul class="dragndrop-preview">
               <li v-for="(file, index) in previews" :key="index">
                 {{ file.name }}
@@ -168,8 +169,8 @@ export default {
           .then(() => {
             //updating existing tags
             const existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
-            const upload = async function (item) {
-              let response = await fetch(`http://localhost:8000/api/tags/${tag.id}/`, {
+            const upload = async function (item, id) {
+              let response = await fetch(`http://localhost:8000/api/tags/${id}/`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -185,22 +186,41 @@ export default {
             for (let tag of this.tags) {
               if (existingSelectedTagNamesArray.includes(tag.name)) {
                 tag.catalog_items.push(newItemID)
-                upload(tag.catalog_items)
+                upload(tag.catalog_items, tag.id)
                     .then(response => console.log(response));
               }
             }
           })
     },
     uploadPreviews() {
-
+      let token = this.token
+      let newItemID = this.newItemID
+      let headers = new Headers()
+      headers.append("Authorization", `Token ${token}`);
+      const upload = async function (image) {
+        let formdata = new FormData();
+        formdata.append("catalog_item", newItemID)
+        formdata.append("image", image)
+        let response = await fetch("http://localhost:8000/api/previews/", {
+          method: 'POST',
+          headers: headers,
+          body: formdata,
+          redirect: 'follow'
+        })
+        return await response.json()
+      }
+      for (let image of this.previews) {
+        upload(image).then(response => console.log(response))
+      }
     },
     addCatalogItemFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
       fetch(`http://localhost:8000/api/catalog/`, {
         method: 'POST',
+        redirect: "follow",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${this.token}`
+          'Authorization': `Token ${this.token}`,
         },
         body: JSON.stringify({
           title: this.formData.title,
@@ -216,7 +236,12 @@ export default {
           .then(response => {
             this.newItemID = response.id
             store.commit('setCatalog', this.token)
+          })
+          .then(() => {
             this.addTags()
+          })
+          .then(() => {
+            this.uploadPreviews()
           })
           .catch(error => console.error(error))
     }

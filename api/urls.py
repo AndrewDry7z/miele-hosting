@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from .views import CatalogViewSet, TagsViewSet, FilesViewSet, UserViewSet, CountryViewSet, PersonViewSet
+from .views import CatalogViewSet, TagsViewSet, FilesViewSet, UserViewSet, CountryViewSet, PersonViewSet, PreviewsViewSet
 
 router = routers.DefaultRouter()
 router.register('catalog', CatalogViewSet)
 router.register('tags', TagsViewSet)
+router.register('previews', PreviewsViewSet)
 router.register('files', FilesViewSet)
 router.register('users', UserViewSet)
 router.register('countries', CountryViewSet)
