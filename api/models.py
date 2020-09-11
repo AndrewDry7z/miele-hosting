@@ -32,7 +32,7 @@ class Catalog(models.Model):
   owner = models.ForeignKey(Person, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
 
   def __str__(self):
-    return self.title
+    return str(self.title)
 
 
 class Tag(models.Model):
@@ -40,7 +40,7 @@ class Tag(models.Model):
   catalog_items = models.ManyToManyField(Catalog, related_name='tags')
 
   def __str__(self):
-    return self.name
+    return str(self.name)
 
 
 class File(models.Model):
@@ -50,7 +50,7 @@ class File(models.Model):
   catalog_item = models.ForeignKey(Catalog, related_name='files', on_delete=models.CASCADE)
 
   def __str__(self):
-    return self.catalog_item
+    return str(self.catalog_item)
 
 
 class Preview(models.Model):
@@ -58,4 +58,4 @@ class Preview(models.Model):
   catalog_item = models.ForeignKey(Catalog, related_name='previews', on_delete=models.CASCADE)
 
   def __str__(self):
-    return self.name
+    return str(self.catalog_item)
