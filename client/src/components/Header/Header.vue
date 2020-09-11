@@ -70,7 +70,14 @@ export default {
   },
   beforeMount() {
     this.getUserInfo()
-  }
+  },
+  watch: {
+    '$route' (to, from) {
+      if(to !== from ) {
+        this.showProfileActions = false
+      }
+    }
+  },
 }
 </script>
 

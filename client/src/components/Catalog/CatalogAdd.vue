@@ -309,7 +309,10 @@ export default {
           .then(() => {
             this.showMessage = true
           })
-          .catch(error => console.error(error))
+          .catch(error => {
+            console.error(error)
+            this.error = true
+          })
     }
   },
   created() {

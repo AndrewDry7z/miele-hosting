@@ -147,6 +147,7 @@ export default {
   top: 0;
   left: 0;
   background: rgba(30, 30, 30, 0.6);
+  z-index: 10;
 }
 
 .catalog-details {

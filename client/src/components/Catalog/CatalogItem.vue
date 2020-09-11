@@ -1,5 +1,8 @@
 <template>
   <div class="catalog-item">
+    <div class="catalog-item-icons" v-if="$route.name === 'Profile'">
+      <button class="catalog-item-icons__item delete" @click="$emit('delete-item', id)"></button>
+    </div>
     <tiny-slider class="catalog-item-files-slider slider" :navAsThumbnails="true"
                  :navContainer="this.previews.length > 1 ? ('#custom-nav' + this.id) : false"
                  :controls="false" :nav="this.previews.length > 1" v-if="this.previews.length > 0">
@@ -42,7 +45,11 @@ export default {
     previews: Array,
   },
   data() {
-    return {}
+    return {
+      token: this.$cookies.get('mieletoken'),
+      itemToDelete: null,
+      showDeleteMessage: true
+    }
   }
 }
 </script>
@@ -54,6 +61,7 @@ export default {
   display: block;
   border: 1px solid $main-lightgrey;
   padding: 20px;
+  position: relative;
 
   &__article {
     margin: 20px 0 0;
@@ -92,6 +100,31 @@ export default {
     font-weight: 600;
     width: 170px;
     height: 38px;
+  }
+
+  &-icons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 5;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F3F3F3;
+      border: 8px solid #FFFFFF;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      box-sizing: content-box;
+
+      &.delete {
+        &:before {
+          content: url("../../assets/images/icons/trash.svg");
+        }
+      }
+    }
   }
 }
 </style>

@@ -69,6 +69,7 @@
               :description="item.description"
               :previews="item.previews"
               @item-selected="itemSelected(item.id)"
+              @delete-item="showDeleteMessage(item.id)"
           />
         </div>
       </div>
@@ -78,6 +79,20 @@
           @overlay-click="overlayClick($event)"
       />
     </div>
+
+    <aside class="overlay" v-if="showDeleteMessageBool">
+      <section class="delete" @click="showDeleteMessageBool = false">
+        <span class="delete__close"></span>
+        <img src="@/assets/images/icons/trash.svg" alt="Delete item" class="delete__icon" />
+        <h3 class="delete__text">
+          Delete file?
+        </h3>
+        <div class="delete-buttons">
+          <button class="button--red delete-buttons__item" @click="deleteItem()">Yes</button>
+          <button class="button--red delete-buttons__item" @click="showDeleteMessageBool = false">No</button>
+        </div>
+      </section>
+    </aside>
   </main>
 </template>
 
@@ -103,7 +118,10 @@ export default {
       currentCountry: null,
       selectedItem: null,
       catalog: store.getters.getCatalog,
-      catalogFilteredByUser: null
+      catalogFilteredByUser: null,
+      showDeleteMessageBool: false,
+      itemToDelete: null,
+      token: this.$cookies.get('mieletoken')
     }
   },
   methods: {
@@ -242,6 +260,26 @@ export default {
     },
     filterCatalogByUser() {
       this.catalogFilteredByUser = this.catalog.filter(item => item.owner.toString() === this.$route.params.id)
+    },
+    showDeleteMessage(id) {
+      this.showDeleteMessageBool = true
+      this.itemToDelete = id
+    },
+    deleteItem() {
+      let vm = this
+      fetch(`http://localhost:8000/api/catalog/${this.itemToDelete}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Token ${this.token}`
+        }
+      })
+          .then(() => {
+                store.commit('setCatalog', vm.token)
+                vm.catalog = store.getters.getCatalog
+                vm.catalogFilteredByUser = vm.catalogFilteredByUser.filter(item => (item.id !== this.itemToDelete))
+              }
+          )
+          .catch(error => console.error(error))
     }
   },
   created() {
@@ -375,6 +413,50 @@ export default {
     &__title {
       font-size: 28px;
       margin-bottom: 30px;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(40, 40, 40, 0.5);
+    z-index: 10;
+  }
+
+  .delete {
+    background: #ffffff;
+    padding: 60px;
+    width: 100%;
+    max-width: 540px;
+    text-align: center;
+
+    &__icon {
+      margin: 0 auto 25px;
+      width: 25px;
+    }
+
+    &__text {
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    &-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 55px;
+
+      &__item {
+        width: 200px;
+        height: 60px;
+        font-size: 15px;
+        font-weight: 600;
+      }
     }
   }
 }
