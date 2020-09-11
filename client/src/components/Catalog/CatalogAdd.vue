@@ -97,6 +97,14 @@
         </div>
       </form>
     </div>
+    <aside class="overlay" v-if="showMessage">
+      <section class="message">
+        <span class="message__icon" :class="error ? 'false' : 'true'"></span>
+        <h3 class="message__text" v-if="error">Something went wrong, try again later</h3>
+        <h3 class="message__text" v-else>This file was uploaded successfully</h3>
+        <router-link to="/" class="message__button button--red">Continue</router-link>
+      </section>
+    </aside>
   </main>
 </template>
 
@@ -121,7 +129,9 @@ export default {
         owner: null
       },
       newItemID: null,
-      token: null
+      token: null,
+      showMessage: false,
+      error: false
     }
   },
   methods: {
@@ -166,9 +176,7 @@ export default {
       }
 
       let newTagNamesArray = this.selectedTags.filter(name => !existingTagNames.includes(name))
-
-      let token = this.token
-      let newItemID = this.newItemID
+      let vm = this
 
       //adding new tags
       new Promise((resolve) => {
@@ -177,14 +185,17 @@ export default {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Token ${token}`
+              'Authorization': `Token ${vm.token}`
             },
             body: JSON.stringify({
               name: item,
-              catalog_items: [newItemID]
+              catalog_items: [vm.newItemID]
             })
           })
-              .catch(error => console.error(error))
+              .catch(error => {
+                console.error(error)
+                this.error = true
+              })
           return await response.json()
         }
         for (let newTagName of newTagNamesArray) {
@@ -202,7 +213,7 @@ export default {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Token ${token}`
+                  'Authorization': `Token ${vm.token}`
                 },
                 body: JSON.stringify({
                   catalog_items: item
@@ -213,7 +224,7 @@ export default {
             }
             for (let tag of this.tags) {
               if (existingSelectedTagNamesArray.includes(tag.name)) {
-                tag.catalog_items.push(newItemID)
+                tag.catalog_items.push(vm.newItemID)
                 upload(tag.catalog_items, tag.id)
                     .then(response => console.log(response));
               }
@@ -295,12 +306,17 @@ export default {
           .then(() => {
             this.uploadFiles()
           })
+          .then(() => {
+            this.showMessage = true
+          })
           .catch(error => console.error(error))
     }
   },
   created() {
     this.token = this.$cookies.get('mieletoken')
     this.owner = store.getters.getUserInfo.id
+    this.showMessage = false
+    this.error = false
     fetch('http://localhost:8000/api/tags/', {
       method: 'GET',
       headers: {
@@ -423,6 +439,7 @@ export default {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
+        margin-top: 50px;
 
         label {
           margin: 0 0 0 15px;
@@ -478,6 +495,69 @@ export default {
       position: absolute;
       opacity: 0;
       top: 100px;
+    }
+
+    .overlay {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(40, 40, 40, 0.5);
+
+      .message {
+        padding: 50px;
+        background: #ffffff;
+        text-align: center;
+        max-width: 540px;
+
+        &__icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 44px;
+          width: 44px;
+          border: 2px solid #000;
+          border-radius: 50%;
+          margin: 0 auto 24px;
+
+          &:before {
+            font-size: 34px;
+            font-weight: 300;
+          }
+
+          &.true {
+            &:before {
+              content: '\2714';
+            }
+          }
+
+          &.false {
+            &:before {
+              content: '\2715';
+            }
+          }
+        }
+
+        &__text {
+          font-size: 28px;
+          font-weight: 600;
+        }
+
+        &__button {
+          width: 210px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          font-weight: 600;
+          text-decoration: none;
+          margin: 55px auto 0;
+        }
+      }
     }
   }
 
