@@ -37,7 +37,7 @@ class Catalog(models.Model):
 
 class Tag(models.Model):
   name = models.CharField(max_length=140)
-  catalog_items = models.ManyToManyField(Catalog, related_name='tags')
+  catalog_items = models.ManyToManyField(Catalog, related_name='tags', default=None, blank=True)
 
   def __str__(self):
     return str(self.name)

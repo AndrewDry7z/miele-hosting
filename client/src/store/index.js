@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import user from "./modules/user"
 import catalog from "./modules/catalog";
-import tag from "./modules/tag"
+import tag from "./modules/tags"
 import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)

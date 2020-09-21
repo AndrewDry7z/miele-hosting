@@ -1,13 +1,14 @@
 <template>
   <div class="catalog-item">
     <div class="catalog-item-icons" v-if="$route.name === 'Profile'">
+      <router-link class="catalog-item-icons__item edit" :to="`/edit/${this.id}/`"></router-link>
       <button class="catalog-item-icons__item delete" @click="$emit('delete-item', id)"></button>
     </div>
     <tiny-slider class="catalog-item-files-slider slider" :navAsThumbnails="true"
                  :navContainer="this.previews.length > 1 ? ('#custom-nav' + this.id) : false"
                  :controls="false" :nav="this.previews.length > 1" v-if="this.previews.length > 0">
       <div v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
-        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item">
+        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item" loading="lazy">
       </div>
     </tiny-slider>
     <ul class="slider-nav" :id="'custom-nav' + this.id" v-if="previews.length > 1">
@@ -112,7 +113,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #F3F3F3;
+      background: $main-lightgrey;
       border: 8px solid #FFFFFF;
       border-radius: 50%;
       width: 40px;
@@ -122,6 +123,15 @@ export default {
       &.delete {
         &:before {
           content: url("../../assets/images/icons/trash.svg");
+        }
+      }
+
+      &.edit {
+        display: flex;
+
+        &:before {
+          display: block;
+          content: url("../../assets/images/icons/pencil-black.svg");
         }
       }
     }

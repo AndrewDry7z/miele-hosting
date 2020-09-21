@@ -6,23 +6,28 @@
   </div>
 </template>
 
-<style lang="scss">
-</style>
 <script>
 import Header from "./components/Header/Header"
 import Footer from "@/components/Footer/Footer"
-//import store from '@/store'
+import store from '@/store'
 
 export default {
   data() {
     return {
-      hasToken: this.$cookies.isKey('mieletoken')
+      hasToken: this.$cookies.isKey('mieletoken'),
+      token: this.$cookies.get('mieletoken')
     }
   },
   methods: {
     redirectToAuthPage() {
       if ((!this.hasToken) && (this.$router.currentRoute.name !== 'Auth')) {
         this.$router.push('/auth/')
+      }
+    },
+    getData() {
+      if (this.hasToken) {
+        store.commit('setCatalog', this.token)
+        store.commit('setTagsList', this.token)
       }
     }
   },
@@ -32,6 +37,7 @@ export default {
   },
   created() {
     this.redirectToAuthPage()
+    this.getData()
   }
 }
 </script>

@@ -201,7 +201,7 @@ export default {
 
     &__input {
       display: block;
-      background: #F3F3F3;
+      background: $main-lightgrey;
       height: 40px;
       padding-left: 20px;
       width: 100%;

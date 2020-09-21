@@ -21,10 +21,13 @@
             </label>
             <input type="file" id="fileInput" name="files[]" multiple accept="image/jpeg, image/png" class="fileInput"
                    @change="clickAddPreview($event)">
-            <ul class="dragndrop-preview">
-              <li v-for="(file, index) in previews" :key="index">
-                {{ file.name }}
-                <button @click="removeFile(file)" title="Remove">X</button>
+            <ul class="dragndrop-previews" v-if="previews.length > 0">
+              <li v-for="(image, index) in previews" :key="index" class="dragndrop-previews-item">
+                <img :src="showPreview(image)" :alt="image.name" class="dragndrop-previews-item__image">
+                <button @click="removeFile(image)" title="Remove" class="dragndrop-previews-item__remove"></button>
+              </li>
+              <li class="dragndrop-previews-item">
+                <label for="fileInput" class="dragndrop-previews-item__add">+</label>
               </li>
             </ul>
           </div>
@@ -62,7 +65,7 @@
               </p>
             </div>
 
-            <div class="catalog-add-form-tags">
+            <div class="catalog-add-form-tags" v-if="selectedTags.length > 0">
               <div class="catalog-add-form-tags-item" v-for="(tag, index) of selectedTags" :key="index">
                 {{ tag }}
                 <span class="catalog-add-form-tags-item__close" @click="$delete(selectedTags, index)"></span>
@@ -84,15 +87,12 @@
                 <router-link to="/" class="catalog-add-form__cancel">Cancel</router-link>
               </div>
             </div>
-
             <ul class="files-preview">
               <li v-for="(file, index) in files" :key="index">
                 {{ file.name }}
                 <button @click="removeFile(file)" title="Remove">X</button>
               </li>
             </ul>
-
-
           </fieldset>
         </div>
       </form>
@@ -136,8 +136,14 @@ export default {
   },
   methods: {
     selectTag() {
-      this.selectedTags.push(this.tagInput)
-      this.tagInput = null
+      if (!this.selectedTags.includes(this.tagInput)) {
+        this.selectedTags.push(this.tagInput)
+        this.tagInput = null
+      }
+    },
+    showPreview(image) {
+      let preview = URL.createObjectURL(image)
+      return preview
     },
     addPreview(e) {
       let droppedImages = e.dataTransfer.files;
@@ -248,7 +254,7 @@ export default {
         })
         return await response.json()
       }
-      for (let image of this.previews) {
+      for (let image of this.previews.reverse()) {
         upload(image).then(response => console.log(response))
       }
     },
@@ -305,9 +311,11 @@ export default {
           })
           .then(() => {
             this.uploadFiles()
+            //todo: fix cyrillic names error
           })
           .then(() => {
             this.showMessage = true
+            store.commit('setCatalog', this.token)
           })
           .catch(error => {
             console.error(error)
@@ -338,6 +346,12 @@ export default {
 
 .catalog {
   &-add {
+
+    &__title {
+      font-size: 40px;
+      font-weight: 500;
+    }
+
     &-form {
       border-top: 1px solid $main-lightgrey;
       padding-top: 70px;
@@ -483,6 +497,51 @@ export default {
       &__input {
         position: absolute;
         opacity: 0;
+      }
+
+      &-previews {
+        display: flex;
+        gap: 16px;
+
+        &-item {
+          position: relative;
+          display: block;
+          width: 20%;
+
+          &__image {
+            height: 90px;
+            object-fit: cover;
+          }
+
+          &__remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #ffffff;
+            height: 20px;
+            width: 20px;
+            display: block;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px $main-lightgrey;
+
+            &:before {
+              content: '\2715';
+              color: $main-black;
+            }
+          }
+
+          &__add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            cursor: pointer;
+            background: $main-lightgrey;
+            font-size: 36px;
+          }
+        }
       }
     }
 

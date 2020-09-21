@@ -10,6 +10,9 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
+    "flex-gap-polyfill": "^1.0.3",
+    "postcss": "^7.0.32",
+    "postcss-import": "^12.0.1",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-cookies": "^1.7.3",
