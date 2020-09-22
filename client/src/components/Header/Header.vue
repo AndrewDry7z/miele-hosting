@@ -45,6 +45,13 @@ export default {
       this.$cookies.remove('mieletoken')
       this.$router.push('/auth/')
     },
+    clickOutside() {
+      window.addEventListener('click', event => {
+       if (!event.target.parentNode.classList.contains('header-user')) {
+         this.showProfileActions = false
+       }
+      })
+    },
     getActualUserID() {
       let bytes = CryptoJS.AES.decrypt(this.$cookies.get('uid'), 'ID')
       return bytes.toString(CryptoJS.enc.Utf8)
@@ -68,6 +75,9 @@ export default {
           .catch(error => console.error(error))
     }
   },
+  created() {
+    this.clickOutside()
+  },
   beforeMount() {
     this.getUserInfo()
   },
@@ -77,7 +87,7 @@ export default {
         this.showProfileActions = false
       }
     }
-  },
+  }
 }
 </script>
 
