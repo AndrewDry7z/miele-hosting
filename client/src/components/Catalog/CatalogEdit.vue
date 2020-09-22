@@ -423,6 +423,10 @@ export default {
     padding-bottom: 30px;
     margin-bottom: 70px;
     border-bottom: 1px solid #E9E9E9;
+
+    @media screen and (max-width: 1000px) {
+      margin-bottom: 30px;
+    }
   }
 
   &-buttons {
@@ -431,10 +435,20 @@ export default {
     flex-wrap: wrap;
     margin-top: 50px;
 
+    @media screen and (max-width: 1000px) {
+      flex-direction: column;
+      margin-bottom: 50px;
+    }
+
     &__item {
       font-size: 15px;
       font-weight: 600;
       width: 200px;
+
+      @media screen and (max-width: 1000px) {
+        width: 100%;
+        margin: 10px 0;
+      }
     }
 
     label {
@@ -444,6 +458,10 @@ export default {
       margin-left: 16px;
       margin-right: 30px;
       cursor: pointer;
+
+      @media screen and (max-width: 1000px) {
+        margin: 10px 0;
+      }
     }
   }
 
@@ -464,7 +482,6 @@ export default {
   }
 
   &-data {
-    width: 50%;
 
     &__item {
       font-size: 20px;
@@ -494,7 +511,8 @@ export default {
     }
 
     &--50 {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       width: 100%;
       gap: 30px;
     }
@@ -530,12 +548,16 @@ export default {
   }
 
   &-flex {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 70px;
+
+    @media screen and (max-width: 1000px) {
+      display: block;
+    }
   }
 
   &-previews {
-    width: 50%;
 
     &-big {
       position: relative;
@@ -566,16 +588,21 @@ export default {
     }
 
     &-list {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
       gap: 15px;
       margin-top: 25px;
 
+      @media screen and (max-width: 1000px) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+
       &-item {
-        width: 20%;
         cursor: pointer;
+        height: 90px;
 
         &__image {
-          height: 90px;
+          height: 100%;
           width: 100%;
           object-fit: cover;
         }

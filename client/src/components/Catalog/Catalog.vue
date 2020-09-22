@@ -21,6 +21,14 @@
         </div>
         <CatalogTags :token="token" @tag-select="filterByTag($event)" />
         <CatalogDetails
+            v-if="screenWidth > 600"
+            :item="selectedItem"
+            @close-details="closeDetails()"
+            @overlay-click="overlayClick($event)"
+            @tag-select="filterByTag($event)"
+        />
+        <CatalogDetailsMobile
+            v-else
             :item="selectedItem"
             @close-details="closeDetails()"
             @overlay-click="overlayClick($event)"
@@ -35,19 +43,21 @@
 <script>
 import CatalogItem from "./CatalogItem";
 import CatalogDetails from "./CatalogDetails";
+import CatalogDetailsMobile from "@/components/Catalog/CatalogDetailsMobile";
 import CatalogTags from "@/components/Catalog/CatalogTags";
 import store from '@/store'
 
 export default {
   name: "Catalog",
-  components: {CatalogTags, CatalogDetails, CatalogItem},
+  components: {CatalogTags, CatalogDetails, CatalogDetailsMobile, CatalogItem},
   data() {
     return {
       catalog: store.getters.getCatalog,
       selectedItem: null,
       token: this.$cookies.get('mieletoken'),
       filteredCatalog: store.getters.getCatalog,
-      selectedTag: store.getters.getSelectedTag
+      selectedTag: store.getters.getSelectedTag,
+      screenWidth: screen.width
     }
   },
   methods: {
@@ -116,12 +126,12 @@ export default {
       background: $main-lightgrey;
       color: $main-black;
       text-decoration: none;
-      width: fit-content;
+      width: 170px;
       margin-bottom: 30px;
+      text-align: center;
 
       @media screen and (max-width: 600px) {
         width: 100%;
-        text-align: center;
       }
     }
   }

@@ -74,6 +74,13 @@
         </div>
       </div>
       <CatalogDetails
+          v-if="screenWidth > 600"
+          :item="selectedItem"
+          @close-details="closeDetails()"
+          @overlay-click="overlayClick($event)"
+      />
+      <CatalogDetailsMobile
+          v-else
           :item="selectedItem"
           @close-details="closeDetails()"
           @overlay-click="overlayClick($event)"
@@ -101,10 +108,11 @@ import store from '@/store'
 import CryptoJS from "crypto-js";
 import CatalogItem from "@/components/Catalog/CatalogItem";
 import CatalogDetails from "@/components/Catalog/CatalogDetails";
+import CatalogDetailsMobile from "@/components/Catalog/CatalogDetailsMobile";
 
 export default {
   name: "Profile",
-  components: {CatalogDetails, CatalogItem},
+  components: {CatalogDetails, CatalogDetailsMobile, CatalogItem},
   data() {
     return {
       user: null,
@@ -121,7 +129,8 @@ export default {
       catalogFilteredByUser: null,
       showDeleteMessageBool: false,
       itemToDelete: null,
-      token: this.$cookies.get('mieletoken')
+      token: this.$cookies.get('mieletoken'),
+      screenWidth: null
     }
   },
   methods: {
@@ -286,6 +295,7 @@ export default {
     this.getUserInfo()
     this.getCountriesList()
     this.filterCatalogByUser()
+    this.screenWidth = screen.width
   },
   watch: {
     '$route.params.id': function () {
@@ -300,6 +310,8 @@ export default {
 @import "../../styles/variables";
 
 .profile {
+  overflow: hidden;
+
   &.edit {
     .profile-name__item {
       border-bottom: 1px solid $main-darkgrey;
@@ -313,6 +325,16 @@ export default {
   &-flex {
     display: flex;
     align-items: flex-start;
+
+    @media screen and (max-width: 1000px) {
+      flex-direction: column;
+    }
+  }
+
+  &-data {
+    @media screen and (max-width: 1000px) {
+      margin: auto;
+    }
   }
 
   &-photo {
@@ -321,6 +343,10 @@ export default {
     width: 230px;
     height: 230px;
     position: relative;
+
+    @media screen and (max-width: 800px) {
+      margin: 0 auto 40px;
+    }
 
     &__image {
       border-radius: 50%;
@@ -385,10 +411,18 @@ export default {
       border-bottom: 1px solid $main-lightgrey;
       width: 450px;
 
+      @media screen and (max-width: 1000px) {
+        width: 100%;
+      }
+
       &__input {
         width: 290px;
         display: inline-block;
         margin-left: auto;
+
+        @media screen and (max-width: 1000px) {
+          width: 100%;
+        }
       }
     }
   }

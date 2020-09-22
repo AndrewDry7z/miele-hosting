@@ -12,6 +12,11 @@ const routes = [
         component: Home
     },
     {
+        path: '/catalog/:id',
+        name: 'Catalog Detail',
+        component: () => import(/* webpackChunkName: "add" */ '../components/Catalog/CatalogDetailsMobile.vue')
+    },
+    {
         path: '/add',
         name: 'Add',
         component: () => import(/* webpackChunkName: "add" */ '../components/Catalog/CatalogAdd.vue')

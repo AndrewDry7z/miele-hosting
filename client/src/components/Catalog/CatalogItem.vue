@@ -13,7 +13,7 @@
     </tiny-slider>
     <ul class="slider-nav" :id="'custom-nav' + this.id" v-if="previews.length > 1">
       <li v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
-        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item">
+        <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item" loading="lazy">
       </li>
     </ul>
     <p class="catalog-item__article grey" v-if="article.length > 0">
@@ -25,7 +25,9 @@
     <p class="catalog-item__description">
       {{ this.description }}
     </p>
-    <button class="button--red catalog-item__button" @click="$emit('item-selected', id)">See more</button>
+    <button class="catalog-item__button button--red" @click="$emit('item-selected', id)">
+      See more
+    </button>
   </div>
 </template>
 
@@ -49,7 +51,8 @@ export default {
     return {
       token: this.$cookies.get('mieletoken'),
       itemToDelete: null,
-      showDeleteMessage: true
+      showDeleteMessage: true,
+      screenWidth: screen.width
     }
   }
 }
@@ -63,6 +66,9 @@ export default {
   border: 1px solid $main-lightgrey;
   padding: 20px;
   position: relative;
+  @media screen and (max-width: 600px) {
+    content-visibility: auto
+  }
 
   &__article {
     margin: 20px 0 0;
@@ -99,7 +105,10 @@ export default {
   }
 
   &__button {
-    display: block;
+    display: flex!important;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     margin-top: 40px;
     font-weight: 600;
     width: 170px;

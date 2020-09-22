@@ -47,9 +47,9 @@ export default {
     },
     clickOutside() {
       window.addEventListener('click', event => {
-       if (!event.target.parentNode.classList.contains('header-user')) {
-         this.showProfileActions = false
-       }
+        if (!event.target.parentNode.classList.contains('header-user')) {
+          this.showProfileActions = false
+        }
       })
     },
     getActualUserID() {
@@ -82,8 +82,8 @@ export default {
     this.getUserInfo()
   },
   watch: {
-    '$route' (to, from) {
-      if(to !== from ) {
+    '$route'(to, from) {
+      if (to !== from) {
         this.showProfileActions = false
       }
     }
@@ -147,15 +147,22 @@ export default {
       border: 1px solid $main-lightgrey;
       padding: 10px;
       font-size: 14px;
+      background: #ffffff;
+      z-index: 10;
 
       @media screen and (max-width: 600px) {
-        width: 200px;
+        width: 250px;
       }
 
       &__profile {
         margin-bottom: 10px;
         text-decoration: none;
         color: inherit;
+
+        @media screen and (max-width: 600px) {
+          margin-bottom: 20px;
+          display: block;
+        }
       }
 
       &__logout {

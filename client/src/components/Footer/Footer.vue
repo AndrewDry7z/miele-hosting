@@ -34,14 +34,19 @@ export default {
     padding-top: 40px;
     padding-bottom: 40px;
     border-top: 1px solid $main-lightgrey;
+
+    @media screen and (max-width: 600px) {
+      justify-content: space-between;
+    }
   }
 
   &__immer-besser {
     margin-right: 45px;
-    width: fit-content;
+    width: auto;
 
     @media screen and (max-width: 600px) {
       width: 75px;
+      margin-right: 0;
     }
   }
 

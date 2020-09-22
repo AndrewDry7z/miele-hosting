@@ -11,7 +11,7 @@
         <div class="catalog-add-form-flex">
           <div class="catalog-add-form-file">
             <label class="dragndrop-area" ref="fileform" for="fileInput" v-cloak @drop.prevent="addPreview"
-                   @dragover.prevent>
+                   @dragover.prevent v-if="screenWidth > 600">
               Drag and Drop here <br />
               or <br />
               <span>Browse files</span>
@@ -19,7 +19,14 @@
                    class="dragndrop-area__image"
                    alt="Drag N Drop Files Here">
             </label>
-            <input type="file" id="fileInput" name="files[]" multiple accept="image/jpeg, image/png" class="fileInput"
+            <label class="dragndrop-area" ref="fileform" for="fileInput" v-cloak @drop.prevent="addPreview"
+                   @dragover.prevent v-else>
+              <span>Upload previews</span>
+              <img src="../../assets/images/drag-n-drop.svg"
+                   class="dragndrop-area__image"
+                   alt="Drag N Drop Files Here">
+            </label>
+            <input type="file" id="fileInput" name="files[]" hidden multiple accept="image/jpeg, image/png" class="fileInput"
                    @change="clickAddPreview($event)">
             <ul class="dragndrop-previews" v-if="previews.length > 0">
               <li v-for="(image, index) in previews" :key="index" class="dragndrop-previews-item">
@@ -131,7 +138,8 @@ export default {
       newItemID: null,
       token: null,
       showMessage: false,
-      error: false
+      error: false,
+      screenWidth: null
     }
   },
   methods: {
@@ -328,6 +336,7 @@ export default {
     this.owner = store.getters.getUserInfo.id
     this.showMessage = false
     this.error = false
+    this.screenWidth = screen.width
     fetch('http://localhost:8000/api/tags/', {
       method: 'GET',
       headers: {
@@ -346,7 +355,6 @@ export default {
 
 .catalog {
   &-add {
-
     &__title {
       font-size: 40px;
       font-weight: 500;
@@ -357,6 +365,10 @@ export default {
       padding-top: 70px;
       margin-top: 30px;
 
+      @media screen and (max-width: 600px) {
+        padding-top: 30px;
+      }
+
       &__heading {
         font-size: 20px;
       }
@@ -366,19 +378,35 @@ export default {
         justify-content: space-between;
         align-items: flex-start;
 
+        @media screen and (max-width: 1000px) {
+          flex-direction: column;
+        }
+
         .half {
           width: 48%;
+
+          @media screen and (max-width: 1000px) {
+            width: 100%;
+          }
         }
       }
 
       &-file {
         width: 48%;
+
+        @media screen and (max-width: 1000px) {
+          width: 100%;
+        }
       }
 
       &-inputs {
         border: none;
         padding: 0;
         width: 48%;
+
+        @media screen and (max-width: 1000px) {
+          width: 99%;
+        }
       }
 
       label {
@@ -407,6 +435,10 @@ export default {
         font-size: 15px;
         font-weight: 600;
         width: 200px;
+
+        @media screen and (max-width: 1000px) {
+          width: 100%;
+        }
       }
 
       &__cancel {
@@ -458,6 +490,10 @@ export default {
         flex-wrap: wrap;
         margin-top: 50px;
 
+        @media screen and (max-width: 1000px) {
+          display: block;
+        }
+
         label {
           margin: 0 0 0 15px;
           display: flex;
@@ -466,6 +502,11 @@ export default {
           cursor: pointer;
           font-size: 15px;
           width: 200px;
+
+          @media screen and (max-width: 1000px) {
+            width: 100%;
+            margin: 15px 0;
+          }
         }
       }
     }
@@ -485,12 +526,18 @@ export default {
         color: #bdbdbd;
         font-size: 20px;
 
+        @media screen and (max-width: 1000px) {
+          min-height: unset;
+          padding: 30px;
+        }
+
         span {
           color: $main-red;
         }
 
         &__image {
           margin-top: 70px;
+          width: 50%;
         }
       }
 
@@ -500,13 +547,13 @@ export default {
       }
 
       &-previews {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         gap: 16px;
 
         &-item {
           position: relative;
           display: block;
-          width: 20%;
 
           &__image {
             height: 90px;
