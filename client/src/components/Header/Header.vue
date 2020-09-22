@@ -101,6 +101,18 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media screen and (max-width: 600px) {
+      justify-content: center;
+      position: relative;
+    }
+  }
+
+  &-right {
+    @media screen and (max-width: 600px) {
+      position: absolute;
+      right: 5px;
+    }
   }
 
   &-user {
@@ -112,6 +124,9 @@ export default {
     &__name {
       font-size: 14px;
       cursor: pointer;
+      @media screen and (max-width: 600px) {
+        display: none;
+      }
     }
 
     &__avatar {
@@ -132,6 +147,10 @@ export default {
       border: 1px solid $main-lightgrey;
       padding: 10px;
       font-size: 14px;
+
+      @media screen and (max-width: 600px) {
+        width: 200px;
+      }
 
       &__profile {
         margin-bottom: 10px;

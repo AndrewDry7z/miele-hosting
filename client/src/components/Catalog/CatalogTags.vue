@@ -74,6 +74,10 @@ export default {
 @import "../../styles/variables";
 
 .catalog-tags {
+  @media screen and (max-width: 1000px) {
+    margin-bottom: 40px;
+  }
+
   &__heading {
     font-size: 28px;
     margin-bottom: 30px;
@@ -108,6 +112,10 @@ export default {
     margin-top: 30px;
     height: 38px;
     font-weight: 600;
+
+    @media screen and (max-width: 1000px) {
+      width: 100%;
+    }
   }
 }
 </style>

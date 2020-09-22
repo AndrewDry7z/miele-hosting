@@ -118,6 +118,11 @@ export default {
       text-decoration: none;
       width: fit-content;
       margin-bottom: 30px;
+
+      @media screen and (max-width: 600px) {
+        width: 100%;
+        text-align: center;
+      }
     }
   }
 }
@@ -129,7 +134,8 @@ export default {
     column-gap: 30px;
 
     @media screen and (max-width: 1000px) {
-      display: block;
+      display: flex;
+      flex-direction: column-reverse;
     }
   }
 }

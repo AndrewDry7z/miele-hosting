@@ -162,6 +162,11 @@ export default {
   background: #ffffff;
   padding: 0 100px;
 
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    padding: 4vw;
+  }
+
 
   &__close {
     position: absolute;

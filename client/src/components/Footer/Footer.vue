@@ -31,13 +31,18 @@ export default {
   .container {
     display: flex;
     align-items: center;
-    padding: 40px 0;
+    padding-top: 40px;
+    padding-bottom: 40px;
     border-top: 1px solid $main-lightgrey;
   }
 
   &__immer-besser {
     margin-right: 45px;
     width: fit-content;
+
+    @media screen and (max-width: 600px) {
+      width: 75px;
+    }
   }
 
   &__text {

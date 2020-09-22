@@ -6,7 +6,7 @@
     </div>
     <tiny-slider class="catalog-item-files-slider slider" :navAsThumbnails="true"
                  :navContainer="this.previews.length > 1 ? ('#custom-nav' + this.id) : false"
-                 :controls="false" :nav="this.previews.length > 1" v-if="this.previews.length > 0">
+                 :controls="false" :autoHeight="true" :nav="this.previews.length > 1" v-if="this.previews.length > 0">
       <div v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
         <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item" loading="lazy">
       </div>
@@ -82,7 +82,10 @@ export default {
 
   &-files {
     &-slider {
-
+      .tns-slide-active {
+        margin-right: 10px;
+        margin-left: -5px;
+      }
     }
   }
 
