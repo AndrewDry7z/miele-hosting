@@ -68,6 +68,7 @@
               :article="item.article"
               :description="item.description"
               :previews="item.previews"
+              :ownItem="isOwnPage()"
               @item-selected="itemSelected(item.id)"
               @delete-item="showDeleteMessage(item.id)"
           />

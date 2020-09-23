@@ -1,6 +1,6 @@
 <template>
   <div class="catalog-item">
-    <div class="catalog-item-icons" v-if="$route.name === 'Profile'">
+    <div class="catalog-item-icons" v-if="$route.name === 'Profile' && this.ownItem">
       <router-link class="catalog-item-icons__item edit" :to="`/edit/${this.id}/`"></router-link>
       <button class="catalog-item-icons__item delete" @click="$emit('delete-item', id)"></button>
     </div>
@@ -46,6 +46,7 @@ export default {
     title: String,
     description: String,
     previews: Array,
+    ownItem: Boolean
   },
   data() {
     return {
@@ -54,6 +55,9 @@ export default {
       showDeleteMessage: true,
       screenWidth: screen.width
     }
+  },
+  created() {
+    console.log(this.ownItem)
   }
 }
 </script>

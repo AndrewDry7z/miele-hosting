@@ -142,7 +142,7 @@ export default {
 
     &-actions {
       position: absolute;
-      width: 100%;
+      width: 180px;
       top: calc(100% + 20px);
       border: 1px solid $main-lightgrey;
       padding: 10px;
