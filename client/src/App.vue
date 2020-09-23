@@ -42,7 +42,7 @@ export default {
   watch: {
     '$route'(to, from) {
       if ((to !== from) && (this.hasToken) && (to !== '/auth/')) {
-        store.commit('setCatalog', this.token)
+        store.commit('setCatalog', this.$cookies.get('mieletoken'))
       }
     }
   }

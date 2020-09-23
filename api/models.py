@@ -29,7 +29,7 @@ class Catalog(models.Model):
   title = models.CharField(max_length=200, unique=True)
   description = models.TextField(blank=True)
   article = models.CharField(max_length=40, blank=True)
-  owner = models.ForeignKey(Person, blank=True, null=True, default=None, on_delete=models.SET('Removed User'))
+  owner = models.ForeignKey(Person, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
   def __str__(self):
     return str(self.title)
