@@ -38,6 +38,13 @@ export default {
   created() {
     this.redirectToAuthPage()
     this.getData()
+  },
+  watch: {
+    '$route'(to, from) {
+      if ((to !== from) && (this.hasToken) && (to !== '/auth/')) {
+        store.commit('setCatalog', this.token)
+      }
+    }
   }
 }
 </script>

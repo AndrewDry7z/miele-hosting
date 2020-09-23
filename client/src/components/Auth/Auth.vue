@@ -77,7 +77,8 @@ export default {
       },
       screenWidth: null,
       showAuthError: false,
-      loginMode: true
+      loginMode: true,
+      token: null
     }
   },
   created() {
@@ -99,12 +100,15 @@ export default {
       })
           .then(response => response.json())
           .then(response => {
-            if (response.token === undefined) {
+            this.token = response.token
+            let userIdEncrypted = CryptoJS.AES.encrypt(response.user.id.toString(), "ID").toString()
+            this.$cookies.set('uid', userIdEncrypted, '30d')
+            this.$cookies.set('mieletoken', response.token, "30d")
+          })
+          .then(() => {
+            if (this.token === undefined) {
               this.showAuthError = true
             } else {
-              let userIdEncrypted = CryptoJS.AES.encrypt(response.user.id.toString(), "ID").toString()
-              this.$cookies.set('uid', userIdEncrypted, '30d')
-              this.$cookies.set('mieletoken', response.token, "30d")
               this.$router.push('/')
             }
           })

@@ -88,21 +88,30 @@ export default {
   },
   created() {
     if (this.$cookies.isKey('mieletoken')) {
-      this.token = this.$cookies.get('mieletoken')
       store.commit('setCatalog', this.token)
+      this.token = this.$cookies.get('mieletoken')
       this.catalog = store.getters.getCatalog
       this.filteredCatalog = this.catalog
       this.selectedTag = null
     } else {
       this.$router.push('/auth/')
     }
-  },
-  beforeMount() {
-    store.commit('setCatalog', this.token)
-    this.catalog = store.getters.getCatalog
-  },
-  updated() {
-    store.commit('setCatalog', this.token)
+
+    if (store.getters.getCatalog.length < 1) {
+      fetch('http://localhost:8000/api/catalog/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${this.$cookies.get('mieletoken')}`
+        }
+      })
+          .then(response => response.json())
+          .then(response => {
+                this.catalog = response
+                this.filteredCatalog = response
+              }
+          )
+          .catch(error => console.error(error))
+    }
   }
 }
 </script>

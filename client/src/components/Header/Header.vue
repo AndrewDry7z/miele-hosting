@@ -7,11 +7,11 @@
         </router-link>
       </div>
       <div class="header-right">
-        <div class="header-user">
+        <div class="header-user" v-if="user">
           <p class="header-user__name" @click="showProfileActions = !showProfileActions">
             {{ user.first_name }}
           </p>
-          <img class="header-user__avatar" :src="this.user.person.photo" :alt="this.user.person.first_name"
+          <img class="header-user__avatar" :src="user.person.photo" :alt="user.person.first_name"
                @click="showProfileActions = !showProfileActions">
           <div class="header-user-actions" v-if="showProfileActions">
             <router-link :to="'/profile/' + getActualUserID()" class="header-user-actions__profile"
