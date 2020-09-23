@@ -98,7 +98,7 @@ export default {
     }
 
     if (store.getters.getCatalog.length < 1) {
-      fetch('http://localhost:8000/api/catalog/', {
+      fetch('https://miele-hosting.herokuapp.com/api/catalog/', {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`

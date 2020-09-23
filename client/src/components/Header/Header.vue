@@ -57,7 +57,7 @@ export default {
       return bytes.toString(CryptoJS.enc.Utf8)
     },
     getUserInfo() {
-      fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/users/${this.getActualUserID()}/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`

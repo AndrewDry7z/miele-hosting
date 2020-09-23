@@ -7,7 +7,7 @@ export default {
             state.userInfo = object
         },
         updateUserInfo(state, [token, id]) {
-            fetch(`http://localhost:8000/api/users/${id}/`, {
+            fetch(`https://miele-hosting.herokuapp.com/api/users/${id}/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`

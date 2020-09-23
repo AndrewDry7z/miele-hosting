@@ -195,7 +195,7 @@ export default {
       //adding new tags
       new Promise((resolve) => {
         let upload = async function (item) {
-          let response = await fetch(`http://localhost:8000/api/tags/`, {
+          let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -223,7 +223,7 @@ export default {
             //updating existing tags
             const existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
             const upload = async function (item, id) {
-              let response = await fetch(`http://localhost:8000/api/tags/${id}/`, {
+              let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/${id}/`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -254,7 +254,7 @@ export default {
         let formdata = new FormData();
         formdata.append("catalog_item", newItemID)
         formdata.append("image", image)
-        let response = await fetch("http://localhost:8000/api/previews/", {
+        let response = await fetch("https://miele-hosting.herokuapp.com/api/previews/", {
           method: 'POST',
           headers: headers,
           body: formdata,
@@ -275,7 +275,7 @@ export default {
         let formdata = new FormData();
         formdata.append("catalog_item", newItemID)
         formdata.append("file", file)
-        let response = await fetch("http://localhost:8000/api/files/", {
+        let response = await fetch("https://miele-hosting.herokuapp.com/api/files/", {
           method: 'POST',
           headers: headers,
           body: formdata,
@@ -289,7 +289,7 @@ export default {
     },
     addCatalogItemFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
-      fetch(`http://localhost:8000/api/catalog/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/catalog/`, {
         method: 'POST',
         redirect: "follow",
         headers: {
@@ -337,7 +337,7 @@ export default {
     this.showMessage = false
     this.error = false
     this.screenWidth = screen.width
-    fetch('http://localhost:8000/api/tags/', {
+    fetch('https://miele-hosting.herokuapp.com/api/tags/', {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`

@@ -152,7 +152,7 @@ export default {
         this.user = store.getters.getUserInfo
         this.localUser = this.user
       } else {
-        fetch(`http://localhost:8000/api/users/${this.$route.params.id}/`, {
+        fetch(`https://miele-hosting.herokuapp.com/api/users/${this.$route.params.id}/`, {
           method: 'GET',
           headers: {
             'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -175,7 +175,7 @@ export default {
       headers.append('Authorization', `Token ${this.$cookies.get('mieletoken')}`)
       let formdata = new FormData()
       formdata.append('photo', newPhoto)
-      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: headers,
         body: formdata
@@ -189,7 +189,7 @@ export default {
           .catch(error => console.error(error))
     },
     updateUserInfo() {
-      fetch(`http://localhost:8000/api/person/${this.getActualUserID()}/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export default {
       })
           .catch(error => console.error(error))
           .then(() => {
-            fetch(`http://localhost:8000/api/users/${this.getActualUserID()}/`, {
+            fetch(`https://miele-hosting.herokuapp.com/api/users/${this.getActualUserID()}/`, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ export default {
 
     },
     getCountriesList() {
-      fetch(`http://localhost:8000/api/countries/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/countries/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -276,7 +276,7 @@ export default {
     },
     deleteItem() {
       let vm = this
-      fetch(`http://localhost:8000/api/catalog/${this.itemToDelete}/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/catalog/${this.itemToDelete}/`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Token ${this.token}`

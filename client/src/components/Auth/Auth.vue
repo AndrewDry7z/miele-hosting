@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     login() {
-      fetch(`http://localhost:8000/auth/`, {
+      fetch(`https://miele-hosting.herokuapp.com/auth/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ export default {
           })
     },
     register() {
-      fetch(`http://localhost:8000/api/users/`, {
+      fetch(`https://miele-hosting.herokuapp.com/api/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
