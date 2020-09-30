@@ -4,7 +4,7 @@ export default {
     },
     mutations: {
         setCatalog(state, token) {
-            fetch('https://miele-hosting.herokuapp.com/api/catalog/', {
+            fetch(`${process.env.VUE_APP_SERVER_URL}/api/catalog/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`

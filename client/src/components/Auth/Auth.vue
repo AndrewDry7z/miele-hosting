@@ -78,7 +78,8 @@ export default {
       screenWidth: null,
       showAuthError: false,
       loginMode: true,
-      token: null
+      token: null,
+      serverUrl: process.env.VUE_APP_SERVER_URL
     }
   },
   created() {
@@ -88,7 +89,7 @@ export default {
   },
   methods: {
     login() {
-      fetch(`https://miele-hosting.herokuapp.com/auth/`, {
+      fetch(`${this.serverUrl}/auth/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -114,7 +115,7 @@ export default {
           })
     },
     register() {
-      fetch(`https://miele-hosting.herokuapp.com/api/users/`, {
+      fetch(`${this.serverUrl}/api/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

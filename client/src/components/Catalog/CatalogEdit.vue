@@ -208,7 +208,7 @@ export default {
       headers.append('Authorization', `Token ${vm.token}`)
 
       const deleteFile = async function (id) {
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/files/${id}/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/files/${id}/`, {
           method: 'DELETE',
           headers: headers
         })
@@ -219,7 +219,7 @@ export default {
         let formData = new FormData()
         formData.append('file', file)
         formData.append('catalog_item', id)
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/files/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/files/`, {
           method: 'POST',
           headers: headers,
           body: formData
@@ -257,7 +257,7 @@ export default {
         if (catalogItems.length < 1) {
           method = 'DELETE'
         }
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/${tag.id}/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/${tag.id}/`, {
           method: method,
           headers: customHeaders,
           body: formData
@@ -270,7 +270,7 @@ export default {
         formData.append('name', tagName)
         formData.append('catalog_items', [itemID])
 
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/`, {
           method: 'POST',
           headers: headers,
           body: formData
@@ -282,7 +282,7 @@ export default {
       const updateExistingTags = async function (tagName, itemID) {
         let updTagObj = vm.tagsList.filter(tag => tag.name === tagName)[0]
         updTagObj.catalog_items.push(itemID)
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/${updTagObj.id}/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/${updTagObj.id}/`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -319,7 +319,7 @@ export default {
         let formData = new FormData()
         formData.append('image', image)
         formData.append('catalog_item', itemID)
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/previews/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/previews/`, {
           method: 'POST',
           headers: headers,
           body: formData
@@ -329,7 +329,7 @@ export default {
       }
 
       const deletePreview = async function (itemID) {
-        let response = await fetch(`https://miele-hosting.herokuapp.com/api/previews/${itemID}/`, {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/previews/${itemID}/`, {
           method: 'DELETE',
           headers: headers,
         })
@@ -356,7 +356,7 @@ export default {
 
       headers.append("Authorization", `Token ${this.token}`);
 
-      fetch(`https://miele-hosting.herokuapp.com/api/catalog/${this.item.id}/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/catalog/${this.item.id}/`, {
         method: 'PATCH',
         headers: headers,
         body: formData,

@@ -11,7 +11,7 @@ export default {
             state.chosenTag = null
         },
         setTagsList(state, token) {
-            fetch('https://miele-hosting.herokuapp.com/api/tags/', {
+            fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`

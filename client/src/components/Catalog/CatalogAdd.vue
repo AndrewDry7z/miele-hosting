@@ -195,7 +195,7 @@ export default {
       //adding new tags
       new Promise((resolve) => {
         let upload = async function (item) {
-          let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/`, {
+          let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -223,7 +223,7 @@ export default {
             //updating existing tags
             const existingSelectedTagNamesArray = this.selectedTags.filter(name => existingTagNames.includes(name))
             const upload = async function (item, id) {
-              let response = await fetch(`https://miele-hosting.herokuapp.com/api/tags/${id}/`, {
+              let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/${id}/`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -254,7 +254,7 @@ export default {
         let formdata = new FormData();
         formdata.append("catalog_item", newItemID)
         formdata.append("image", image)
-        let response = await fetch("https://miele-hosting.herokuapp.com/api/previews/", {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/previews/`, {
           method: 'POST',
           headers: headers,
           body: formdata,
@@ -275,7 +275,7 @@ export default {
         let formdata = new FormData();
         formdata.append("catalog_item", newItemID)
         formdata.append("file", file)
-        let response = await fetch("https://miele-hosting.herokuapp.com/api/files/", {
+        let response = await fetch(`${process.env.VUE_APP_SERVER_URL}/api/files/`, {
           method: 'POST',
           headers: headers,
           body: formdata,
@@ -289,7 +289,7 @@ export default {
     },
     addCatalogItemFormSubmit() {
       this.token = this.$cookies.get('mieletoken')
-      fetch(`https://miele-hosting.herokuapp.com/api/catalog/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/catalog/`, {
         method: 'POST',
         redirect: "follow",
         headers: {
@@ -337,7 +337,7 @@ export default {
     this.showMessage = false
     this.error = false
     this.screenWidth = screen.width
-    fetch('https://miele-hosting.herokuapp.com/api/tags/', {
+    fetch(`${process.env.VUE_APP_SERVER_URL}/api/tags/`, {
       method: 'GET',
       headers: {
         'Authorization': `Token ${this.token}`

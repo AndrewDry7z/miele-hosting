@@ -153,7 +153,7 @@ export default {
         this.user = store.getters.getUserInfo
         this.localUser = this.user
       } else {
-        fetch(`https://miele-hosting.herokuapp.com/api/users/${this.$route.params.id}/`, {
+        fetch(`${process.env.VUE_APP_SERVER_URL}/api/users/${this.$route.params.id}/`, {
           method: 'GET',
           headers: {
             'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -176,7 +176,7 @@ export default {
       headers.append('Authorization', `Token ${this.$cookies.get('mieletoken')}`)
       let formdata = new FormData()
       formdata.append('photo', newPhoto)
-      fetch(`https://miele-hosting.herokuapp.com/api/person/${this.getActualUserID()}/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: headers,
         body: formdata
@@ -190,7 +190,7 @@ export default {
           .catch(error => console.error(error))
     },
     updateUserInfo() {
-      fetch(`https://miele-hosting.herokuapp.com/api/person/${this.getActualUserID()}/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/person/${this.getActualUserID()}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ export default {
       })
           .catch(error => console.error(error))
           .then(() => {
-            fetch(`https://miele-hosting.herokuapp.com/api/users/${this.getActualUserID()}/`, {
+            fetch(`${process.env.VUE_APP_SERVER_URL}/api/users/${this.getActualUserID()}/`, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -243,7 +243,7 @@ export default {
 
     },
     getCountriesList() {
-      fetch(`https://miele-hosting.herokuapp.com/api/countries/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/countries/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`
@@ -277,7 +277,7 @@ export default {
     },
     deleteItem() {
       let vm = this
-      fetch(`https://miele-hosting.herokuapp.com/api/catalog/${this.itemToDelete}/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/catalog/${this.itemToDelete}/`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Token ${this.token}`

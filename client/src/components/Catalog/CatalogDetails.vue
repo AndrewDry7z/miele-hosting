@@ -70,7 +70,8 @@ export default {
   components: {'tiny-slider': VueTinySlider},
   data() {
     return {
-      owner: null
+      owner: null,
+      serverUrl: process.env.VUE_APP_SERVER_URL
     }
   },
   props: {
@@ -78,7 +79,7 @@ export default {
   },
   methods: {
     getItemsOwner(id) {
-      fetch(`https://miele-hosting.herokuapp.com/api/users/${id}/`, {
+      fetch(`${process.env.VUE_APP_SERVER_URL}/api/users/${id}/`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${this.$cookies.get('mieletoken')}`
