@@ -95,6 +95,12 @@ export default {
       .tns-slide-active {
         margin-right: 10px;
         margin-left: -5px;
+        height: 250px;
+      }
+
+      .catalog-item-files-slider__item {
+        height: 250px;
+        object-fit: cover;
       }
     }
   }
