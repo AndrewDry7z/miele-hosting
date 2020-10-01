@@ -28,6 +28,7 @@ static3 = "==0.7.0"
 Django = "==2.2"
 Pillow = "==7.2.0"
 Unidecode = "==1.1.1"
+django-cleanup = "*"
 
 [requires]
 python_version = "3.8"
