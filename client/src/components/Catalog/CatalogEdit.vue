@@ -564,6 +564,30 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      transition-duration: .3s;
+
+      &:before {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        content: url("~@/assets/images/icons/zoom-in.svg");
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background: rgba(0, 0, 0, .5);
+        cursor: pointer;
+        opacity: 0;
+        transition-duration: .3s;
+      }
+
+      &:hover {
+        &:before {
+          opacity: 1;
+        }
+      }
 
       &-buttons {
         position: absolute;
