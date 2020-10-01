@@ -47,8 +47,10 @@ export default {
     },
     clickOutside() {
       window.addEventListener('click', event => {
-        if (!event.target.parentNode.classList.contains('header-user')) {
-          this.showProfileActions = false
+        if (event.target.parentNode) {
+          if (!event.target.parentNode.classList.contains('header-user')) {
+            this.showProfileActions = false
+          }
         }
       })
     },

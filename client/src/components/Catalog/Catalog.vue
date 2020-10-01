@@ -16,7 +16,7 @@
                 :description="item.description"
                 :previews="item.previews"
                 @item-selected="itemSelected(item.id)"
-            />
+                @show-lightbox="showLightbox($event)" />
           </div>
         </div>
         <CatalogTags :token="token" @tag-select="filterByTag($event)" />
@@ -26,17 +26,20 @@
             @close-details="closeDetails()"
             @overlay-click="overlayClick($event)"
             @tag-select="filterByTag($event)"
-        />
+            @show-lightbox="showLightbox($event)"/>
         <CatalogDetailsMobile
             v-else
             :item="selectedItem"
             @close-details="closeDetails()"
             @overlay-click="overlayClick($event)"
             @tag-select="filterByTag($event)"
-        />
+            @show-lightbox="showLightbox($event)"/>
+        <Lightbox
+            v-if="lightboxImage"
+            :image="lightboxImage"
+            @close-lightbox="closeLightbox()" />
       </div>
     </div>
-
   </main>
 </template>
 
@@ -46,10 +49,11 @@ import CatalogDetails from "./CatalogDetails";
 import CatalogDetailsMobile from "@/components/Catalog/CatalogDetailsMobile";
 import CatalogTags from "@/components/Catalog/CatalogTags";
 import store from '@/store'
+import Lightbox from "@/components/Catalog/Lightbox";
 
 export default {
   name: "Catalog",
-  components: {CatalogTags, CatalogDetails, CatalogDetailsMobile, CatalogItem},
+  components: {Lightbox, CatalogTags, CatalogDetails, CatalogDetailsMobile, CatalogItem},
   data() {
     return {
       catalog: store.getters.getCatalog,
@@ -57,7 +61,8 @@ export default {
       token: this.$cookies.get('mieletoken'),
       filteredCatalog: store.getters.getCatalog,
       selectedTag: store.getters.getSelectedTag,
-      screenWidth: screen.width
+      screenWidth: screen.width,
+      lightboxImage: null
     }
   },
   methods: {
@@ -84,6 +89,12 @@ export default {
           this.filteredCatalog.push(item)
         }
       }
+    },
+    showLightbox(image) {
+      this.lightboxImage = image
+    },
+    closeLightbox() {
+      this.lightboxImage = null
     }
   },
   created() {

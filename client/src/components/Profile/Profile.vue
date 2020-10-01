@@ -71,6 +71,7 @@
               :ownItem="isOwnPage()"
               @item-selected="itemSelected(item.id)"
               @delete-item="showDeleteMessage(item.id)"
+              @show-lightbox="showLightbox($event)"
           />
         </div>
       </div>
@@ -79,12 +80,14 @@
           :item="selectedItem"
           @close-details="closeDetails()"
           @overlay-click="overlayClick($event)"
+          @show-lightbox="showLightbox($event)"
       />
       <CatalogDetailsMobile
           v-else
           :item="selectedItem"
           @close-details="closeDetails()"
           @overlay-click="overlayClick($event)"
+          @show-lightbox="showLightbox($event)"
       />
     </div>
 
@@ -101,6 +104,11 @@
         </div>
       </section>
     </aside>
+
+    <Lightbox
+        v-if="lightboxImage"
+        :image="lightboxImage"
+        @close-lightbox="closeLightbox()" />
   </main>
 </template>
 
@@ -110,10 +118,11 @@ import CryptoJS from "crypto-js";
 import CatalogItem from "@/components/Catalog/CatalogItem";
 import CatalogDetails from "@/components/Catalog/CatalogDetails";
 import CatalogDetailsMobile from "@/components/Catalog/CatalogDetailsMobile";
+import Lightbox from "@/components/Catalog/Lightbox";
 
 export default {
   name: "Profile",
-  components: {CatalogDetails, CatalogDetailsMobile, CatalogItem},
+  components: {CatalogDetails, CatalogDetailsMobile, CatalogItem, Lightbox},
   data() {
     return {
       user: null,
@@ -131,7 +140,8 @@ export default {
       showDeleteMessageBool: false,
       itemToDelete: null,
       token: this.$cookies.get('mieletoken'),
-      screenWidth: null
+      screenWidth: null,
+      lightboxImage: null
     }
   },
   methods: {
@@ -290,6 +300,12 @@ export default {
               }
           )
           .catch(error => console.error(error))
+    },
+    showLightbox(image) {
+      this.lightboxImage = image
+    },
+    closeLightbox() {
+      this.lightboxImage = null
     }
   },
   created() {

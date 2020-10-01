@@ -12,7 +12,8 @@
                      :controls="false"
                      :autoHeight="true"
                      :nav="this.item.previews.length > 1">
-          <div v-for="(item, index) in this.item.previews.slice(0, 5)" :key="index">
+          <div v-for="(item, index) in this.item.previews.slice(0, 5)" :key="index"
+               @click="$emit('show-lightbox', item.image)">
             <img :src="item.image" :alt="item.name" class="catalog-details-preview-slider__item">
           </div>
         </tiny-slider>

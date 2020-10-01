@@ -7,7 +7,7 @@
     <tiny-slider class="catalog-item-files-slider slider" :navAsThumbnails="true"
                  :navContainer="this.previews.length > 1 ? ('#custom-nav' + this.id) : false"
                  :controls="false" :autoHeight="true" :nav="this.previews.length > 1" v-if="this.previews.length > 0">
-      <div v-for="(item, index) in this.previews.slice(0, 5)" :key="index">
+      <div v-for="(item, index) in this.previews.slice(0, 5)" :key="index" @click="$emit('show-lightbox', item.image)">
         <img :src="item.image" :alt="item.name" class="catalog-item-files-slider__item" loading="lazy">
       </div>
     </tiny-slider>
@@ -55,9 +55,6 @@ export default {
       showDeleteMessage: true,
       screenWidth: screen.width
     }
-  },
-  created() {
-    console.log(this.ownItem)
   }
 }
 </script>
@@ -96,6 +93,7 @@ export default {
         margin-right: 10px;
         margin-left: -5px;
         height: 250px;
+        cursor: zoom-in;
       }
 
       .catalog-item-files-slider__item {
