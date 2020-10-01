@@ -9,7 +9,7 @@
       </p>
       <form class="catalog-edit-flex" @submit="updateCatalogItem">
         <div class="catalog-edit-previews">
-          <div class="catalog-edit-previews-big">
+          <div class="catalog-edit-previews-big" @click="showLightbox()">
             <img :src="previewImages[this.activeImageIndex].url
                 ? previewImages[this.activeImageIndex].url
                 : previewImages[this.activeImageIndex]"
@@ -105,13 +105,21 @@
         <router-link :to="`/profile/${this.owner}/`" class="message__button button--red">Continue</router-link>
       </section>
     </aside>
+    <Lightbox
+        v-if="lightboxImage"
+        :image="lightboxImage"
+        @close-lightbox="closeLightbox()" />
   </main>
 </template>
 
 <script>
 import store from "@/store"
+import Lightbox from "@/components/Catalog/Lightbox";
 
 export default {
+  components: {
+    Lightbox
+  },
   name: "CatalogEdit",
   data() {
     return {
@@ -131,7 +139,8 @@ export default {
       newFiles: [],
       showMessage: false,
       error: false,
-      owner: null
+      owner: null,
+      lightboxImage: null
     }
   },
   methods: {
@@ -380,9 +389,14 @@ export default {
           .catch(error => {
             console.error(error)
           })
+    },
+    showLightbox() {
+      this.lightboxImage = (this.previewImages[this.activeImageIndex].url) ? this.previewImages[this.activeImageIndex].url : this.previewImages[this.activeImageIndex]
+    },
+    closeLightbox() {
+      this.lightboxImage = null
     }
-  }
-  ,
+  },
   created() {
     this.token = this.$cookies.get('mieletoken')
     this.item = this.catalog.filter(item => item.id.toString() === this.$route.params.id)[0]
@@ -405,8 +419,7 @@ export default {
     for (let file of this.item.files) {
       this.files.push(file)
     }
-  }
-  ,
+  },
   beforeDestroy() {
     store.commit('setCatalog', this.token)
   }
